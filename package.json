@@ -1,0 +1,73 @@
+{
+  "name": "Hamateur",
+  "version": "4.0.0",
+  "adonis-version": "4.0.0",
+  "description": "Adonis and nodejs app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node ace test"
+  },
+  "keywords": [
+    "adonisjs",
+    "adonis-app"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@adonisjs/ace": "^4.0.7",
+    "@adonisjs/auth": "^2.0.10",
+    "@adonisjs/bodyparser": "^2.0.2",
+    "@adonisjs/cors": "^1.0.5",
+    "@adonisjs/fold": "^4.0.7",
+    "@adonisjs/framework": "^4.0.28",
+    "@adonisjs/ignitor": "^1.0.14",
+    "@adonisjs/lucid": "^4.1.3",
+    "@adonisjs/session": "^1.0.23",
+    "@adonisjs/shield": "^1.0.6",
+    "@angular/animations": "^5.2.9",
+    "@angular/common": "^5.2.9",
+    "@angular/compiler": "^5.2.9",
+    "@angular/core": "^5.2.9",
+    "@angular/forms": "^5.2.9",
+    "@angular/http": "^5.2.9",
+    "@angular/platform-browser": "^5.2.9",
+    "@angular/platform-browser-dynamic": "^5.2.9",
+    "@angular/router": "^5.2.9",
+    "@ngx-translate/core": "^9.1.1",
+    "@ngx-translate/http-loader": "^2.0.1",
+    "angular": "^1.6.9",
+    "angular2-localstorage": "^0.4.0",
+    "core-js": "^2.5.4",
+    "rxjs": "^5.5.8",
+    "sqlite3": "^3.1.13",
+    "uuid": "^3.2.1",
+    "ya-csv": "^0.10.1",
+    "zone.js": "^0.8.25"
+  },
+  "devDependencies": {
+    "@angular/cli": "1.6.7",
+    "@angular/compiler-cli": "^5.2.9",
+    "@angular/language-service": "^5.2.9",
+    "@types/jasmine": "~2.8.3",
+    "@types/jasminewd2": "~2.0.2",
+    "@types/node": "^6.0.104",
+    "codelyzer": "^4.2.1",
+    "jasmine-core": "~2.8.0",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~2.0.0",
+    "karma-chrome-launcher": "~2.2.0",
+    "karma-coverage-istanbul-reporter": "^1.4.2",
+    "karma-jasmine": "~1.1.0",
+    "karma-jasmine-html-reporter": "^0.2.2",
+    "nodemon": "^1.17.3",
+    "protractor": "~5.1.2",
+    "ts-node": "~4.1.0",
+    "tslint": "~5.9.1",
+    "typescript": "~2.5.3"
+  },
+  "autoload": {
+    "App": "./app"
+  }
+}

@@ -1,0 +1,33 @@
+<div *ngIf="!isLoading">
+  <div *ngIf="!isRegistered">
+    <h2>First time here, enter your name ?</h2>
+    <form [formGroup]="newCandidateForm" (ngSubmit)="newCandidate(newCandidateForm.value)">
+      <input type="text" [(ngModel)]="name" formControlName="name" placeholder="Your candidate name">
+      <div class="alert" *ngIf="!newCandidateForm.controls['name'].valid && newCandidateForm.controls['name'].touched">
+        Please enter a candidate name with minimum 4 characters.
+      </div>
+      <p>Votre nom sera : "{{ name }}" continuer ?</p>
+      <button [disabled]="!newCandidateForm.valid" class="btn btn-primary" type="submit">Begin</button>
+    </form>
+
+    <h2>You already have candidate number ?</h2>
+    <form [formGroup]="retrieveCandidateForm" (ngSubmit)="retrieveCandidate(retrieveCandidateForm.value)">
+      <input type="text" [(ngModel)]="uuid" formControlName="uuid" placeholder="Your candidate identifier">
+      <p>8e0d8eb8-0525-4298-b99a-06cc910de3a7</p>
+      <div class="alert" *ngIf="!retrieveCandidateForm.controls['uuid'].valid && retrieveCandidateForm.controls['uuid'].touched">
+        Enter correct id
+      </div>
+      <p *ngIf="candidateExists">
+        Votre identifiant <b>{{ uuid }}</b> existe et correspond au nom <b>{{ name }}</b>
+      </p>
+      <button [disabled]="!retrieveCandidateForm.valid" class="btn btn-primary" ngClick="retrieveCandidateForm()" type="submit">Continuer</button>
+    </form>
+  </div>
+
+  <div *ngIf="isRegistered">
+    <input readonly type="text" [(ngModel)]="candidate.uuid">
+    <button class="btn btn-primary" routerLink="/exam" routerLinkActive="active">Continuer</button>
+    <app-exam [candidate]="candidate"></app-exam>
+  </div>
+
+</div>
