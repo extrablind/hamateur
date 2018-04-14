@@ -8,23 +8,29 @@ First, install NodeJS and npm (node package manager) globally
 Then execute :
 
 ```bash
+# Adonis (NodeJS part)
 cd <this-app-dir>
-# Make some change in .env if needed (specially db)
-cp .env.example .env
+cp .env.example .env # make change in .env file if needed
 npm install
+cd ../ && adonis migration:reset && adonis migration:run && adonis hamateur:importer
+nodemon server.js
+# Angular part
 cd angular
 ng build
-ng serve &
-cd ../ && adonis migration:reset && adonis migration:run && adonis hamateur:importer
+ng serve
 ```
 
 ## Start
 
 ```bash
-nodemon server.js &
-cd angular && ng serve &
+# Both servers must be up !
+cd <this-app-dir>
+nodemon server.js
+cd angular && ng serve
 ```
-Open browser to localhost:4200
+Open browser and go to localhost:4200
+
+Enjoy !
 
 ## Assets
 
