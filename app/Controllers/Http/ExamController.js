@@ -3,6 +3,10 @@ const Database = use('Database')
 const Helpers = use('Helpers')
 const fs = use('fs')
 const readFile = Helpers.promisify(fs.readFile)
+const Logger = use('Logger')
+const Answer = use('App/Models/Answer');
+const Question = use('App/Models/Question');
+const _ = require('lodash');
 
 class ExamController {
 
@@ -13,7 +17,31 @@ class ExamController {
      	return view.render('start');
   }
 
-
+  async correction({session, request, response, view }){
+    const questions = request.post();
+    var score = 0;
+    for(let i=0; i<questions.length;i++){
+      // No answer, score is unchanged
+      if(!questions[i].answered){
+        continue;
+      }
+      var question = await Question.query().with('choices').where({id: questions[i].id}).fetch();
+      question = question.toJSON()[0];
+      var goodChoice =    _.filter(question.choices, ['isGoodAnswer', 1])[0];
+      var selectedChoice =  _.filter(questions[i].choices, ['selected', true])[0];
+      // Good answer
+      if(goodChoice.id == selectedChoice.id){
+          score+= 2
+      }
+      // Bad answer
+      else{
+          score-= 3
+      }
+    }
+    // Score thresold
+    var passing = (score >= 12);
+    response.send({score, passing})
+  }
 
   async begin ({session, request, response, view }) {
 

@@ -10,11 +10,18 @@ export class DataService {
 
     private url: string = 'http://127.0.0.1:3333/api/v1';
 
+    correct(datas){
+      return this.http.post(this.url + "/exam/correct", datas)
+                        .toPromise()
+                        .then(r => {return r });
+    }
+
    createCandidate(name){
      return this.http.post(this.url + "/candidate/create", {name:name})
                        .toPromise()
                        .then(candidate => {return candidate });
     }
+
     getCandidate(uuid){
       console.log(uuid)
       let headers = new HttpHeaders();

@@ -1,7 +1,6 @@
 'use strict'
 
 const Model = use('Model')
-console.log('question');
 
 class Question extends Model {
 

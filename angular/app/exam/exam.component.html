@@ -1,28 +1,17 @@
-<div class="row">
-  <!-- section class="col-lg-4">
-    <app-question-list *ngFor="let question of questions" [question]="question"></app-question-list>
-  </section -->
-  <h3>Exam page</h3>
-</div>
-<div class="row">
-  <p>Candidate name : {{candidate.name}}</p>
-  <p>Candidate number : {{candidate.uuid}}</p>
+<div *ngIf="status === 'pending'" class="card">
+  <div class="card-body">
+    <h3>Welcome</h3>
+    <p>Your candidate name is : {{candidate.name}}</p>
+    <p>
+      Write your personnal number somewhere<br/>
+      <input class="form-control" type="text" placeholder="Readonly input here…" value="{{candidate.uuid}}" readonly>
+    </p>
+    <br/>
+    <br/>
+    <button class="btn btn-primary" (click)="start('real')" type="button">Nouvel examen réel</button>
+    <button class="btn btn-primary" (click)="start('free')" type="button">Série de questions libre</button>
+  </div>
 </div>
 
-<app-question></app-question>
-
-<!--section class="col-lg-8">
-<app-question-list></app-question-list>
-
-    <app-question-display [question]="question"></app-question-display>
-  </section>
-</div>
-<h2>Examen component</h2>
-<h3>Exam number {{exam.number}} - Question #{{question.number}}</h3>
-<p>
-  Candidate = {{ candidate.name }} ({{candidate.uuid}})
-</p>
-<div class="row">
-  <a href="#" ngClick="previous()">Previous question</a>
-  <a href="#" ngClick="next()">Next question</a>
-</div -->
+<!-- Component Exam list for this candidate -->
+<app-question *ngIf="status === 'started'" [examMode]="mode"></app-question>

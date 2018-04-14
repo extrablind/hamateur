@@ -22,4 +22,4 @@ class Answer extends Model {
 
 }
 
-module.exports = Question
+module.exports = Answer

@@ -14,12 +14,21 @@ export default class ExamComponent   {
   public time:any = new Date();
   public status:string = "pending";
   public part:number = 1;
+  // real or free
+  public mode:string = 'real';
 
   constructor() {
   }
+  start(mode){
+    this.mode = mode;
+    this.status = 'started'
+  }
+  changeMode(){
+
+  }
 
   getQuestions(){
-    
+
   }
 
   getAllStatus(){

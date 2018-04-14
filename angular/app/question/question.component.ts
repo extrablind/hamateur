@@ -4,6 +4,7 @@ import { DataService } from '../services/data.service';
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
+  styleUrls: ['./question.component.css']
 })
 export default class QuestionComponent {
 
@@ -13,9 +14,12 @@ export default class QuestionComponent {
     public previous:boolean= true;
     public selected=0
     public countAnsweredQuestions=0
+    public score=0
+    public passing=false
 
     @Output() nextQuestionClick = new EventEmitter();
     @Output() previousQuestionClick = new EventEmitter();
+    @Input() examMode;
 
     constructor(datas:DataService) {
       this.datas = datas
@@ -26,6 +30,12 @@ export default class QuestionComponent {
         this.refreshNavigationStatus()
     }
 
+    async correct(){
+      var data =   await this.datas.correct(this.questions);
+      this.score = data.score
+      this.passing = data.passing
+    }
+
     reInitCurrentChoice(){
       this.questions[this.selected].choices.map(function(obj){
           obj.selected = false;
@@ -33,7 +43,6 @@ export default class QuestionComponent {
     }
 
       isAnswered(question){
-        console.log('------------------------------');
         for (let i = 0; i < question.choices.length ; i++) {
           if(question.choices[i].selected){
             return true;

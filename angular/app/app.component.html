@@ -1,14 +1,34 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div class="container-fluid">
-
-  <div class="row">
-    <nav>
-      <a routerLink="/candidate" routerLinkActive="active">Candidate</a> -
-      <a routerLink="/exam" routerLinkActive="active">Examen</a>
-    </nav>
-    <h3>Welcome to {{ title }} !</h3>
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top ">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <a class="navbar-brand" href="/">Hamateur</a>
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a routerLink="/candidate" class="nav-link" href="#">Candidate</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/exam" class="nav-link" href="#">Examen</a>
+      </li>
+    </ul>
+    <div class="my-2 my-lg-0">
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  </button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <button class="dropdown-item" type="button">Empty action</button>
+          <button class="dropdown-item" type="button">Another empty action</button>
+          <button class="dropdown-item" type="button">Something else here like logout</button>
+        </div>
+      </div>
+    </div>
   </div>
-
+</nav>
+<br/>
+<br/>
+<br/>
+<br/>
+<div class="container-fluid">
   <app-candidate></app-candidate>
-  <!-- router-outlet></router-outlet -->
 </div>
