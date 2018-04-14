@@ -11,6 +11,7 @@ class AppSchema extends Schema {
       	table.string('image')
         table.string('systemId')
       	table.integer('level')
+        table.boolean('containSchema')
       	table.text('explanation', 'longtext')
         table.integer('family_id')
     });

@@ -38,7 +38,7 @@ class Importer extends Command {
     	reader.addListener('data', async function(data) {
             var choices = [];
 
-        		if(countRow >= 80){
+        		if(countRow >= 200){
               return;
             }
             countRow++ ;
@@ -56,15 +56,27 @@ class Importer extends Command {
       	    }else{
               var f =  await Family.query().from('families').where('code', family.code).fetch();
             }
-            console.log(f);
+            // Schema
+            haveImage
+            var haveImage = (data[1].startsWith("-"));
+            var content =  data[1];
+
+            if(haveImage){
+              content =  content.substr(1);
+              console.log(haveImage + content);
+            }
+            content = content.toLowerCase();
+            content = content.charAt(0).toUpperCase() + content.slice(1);
+
             // Question
             var saveQuestion            = {};
             saveQuestion.systemId       = data[0];
-            saveQuestion.content        = data[1]
+            saveQuestion.content        = content
             saveQuestion.image          = data[0] + '.png'
             saveQuestion.level          = data[8]
             saveQuestion.explanation    = data[11]
             saveQuestion.family_id      = f.id
+            saveQuestion.containSchema  = haveImage
             var question = await Question.create(saveQuestion)
               .catch((error) => {console.log(error)});
 
