@@ -7,11 +7,10 @@ const Question = use('App/Models/Question');
 class QuestionController {
 
   async get ({session, request, response, view }) {
-
-    const questions = await Question.query()
-      .with('family').with('choices')
-      .orderByRaw('RANDOM()').limit(20)
-      .fetch();
+    const questions = {
+      legal :    await Question.query().with('family').with('choices') .where({part: 'legal'})      .orderByRaw('RANDOM()').limit(20)  .fetch(),
+      technical :   await Question.query()  .with('family').with('choices').where({part: 'technical'})        .orderByRaw('RANDOM()').limit(20)  .fetch()
+      };
     return response.send(questions);
   }
 }

@@ -13,6 +13,7 @@ class AppSchema extends Schema {
       	table.integer('level')
         table.boolean('containSchema')
       	table.text('explanation', 'longtext')
+        table.string('part')
         table.integer('family_id')
     });
 

@@ -53,18 +53,17 @@ export default class CandidateComponent {
     async newCandidate(name){
         var candidate = await this.dataService.createCandidate(name);
         localStorage.setItem('candidate', candidate.uuid);
+        this.isRegistered = true;
+
       }
 
     async retrieveCandidate(candidate){
       this.candidate = await this.dataService.getCandidate(candidate);
       this.isRegistered = (null !== this.candidate);
-      if(this.isRegistered === null){
-        console.log("try again");
-      }
-    }
 
-    log(){
-      console.log('test')
+      if(this.isRegistered === null){
+        alert("No candidate found, try again");
+      }
     }
 
 

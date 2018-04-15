@@ -8,32 +8,45 @@ import { DataService } from '../services/data.service';
 })
 export default class QuestionComponent {
 
-    public datas;
-    public questions;
-    public next:boolean= true;
-    public previous:boolean= true;
+    public datas
+    public questions
+    public next:boolean= true
+    public previous:boolean= true
     public selected=0
-    public countAnsweredQuestions=0
+    public countAnsweredQuestions={
+      'legal' : 0 ,
+      'technical' : 0
+    }
+    public step:string='legal'
     public score=0
     public passing=false
+    public isLoading=true
+    public answered={}
+    private originalQuestionsData;
+
 
     @Output() nextQuestionClick = new EventEmitter();
     @Output() previousQuestionClick = new EventEmitter();
-    @Input() examMode;
+    @Input() exam;
 
     constructor(datas:DataService) {
       this.datas = datas
     }
 
     async ngOnInit(){
-        this.questions = await this.datas.getQuestions();
+        var questions = await this.datas.getQuestions();
+        this.originalQuestionsData = questions
+        this.questions = questions[this.step]
         this.refreshNavigationStatus()
+        this.isLoading = false;
     }
 
     async correct(){
+      this.isLoading = true;
       var data =   await this.datas.correct(this.questions);
       this.score = data.score
       this.passing = data.passing
+      this.isLoading = false;
     }
 
     reInitCurrentChoice(){
@@ -42,6 +55,19 @@ export default class QuestionComponent {
       })
     }
 
+    changeStep(toStep){
+      this.answered[this.step] = this.questions;
+      // Already done, reload old
+      if(typeof this.answered[toStep] !== 'undefined'){
+        this.questions = this.answered[toStep];
+      }else{
+        this.questions = this.originalQuestionsData[toStep];
+      }
+      this.previous = false
+      this.next = true
+      this.step = toStep
+      this.selected = 0
+    }
       isAnswered(question){
         for (let i = 0; i < question.choices.length ; i++) {
           if(question.choices[i].selected){
@@ -58,9 +84,9 @@ export default class QuestionComponent {
        this.questions[this.selected].choices[index].selected = !previousChoice;
        if(!previousChoice && !wasAnswered){
          this.questions[this.selected].answered = true
-         this.countAnsweredQuestions++
+         this.countAnsweredQuestions[this.step]++
        }else if(wasAnswered && !this.questions[this.selected].choices[index].selected){
-          this.countAnsweredQuestions--
+          this.countAnsweredQuestions[this.step]--
           this.questions[this.selected].answered = false
         }
 

@@ -18,11 +18,21 @@ export default class ExamComponent   {
   public mode:string = 'real';
 
   constructor() {
+
   }
+  async ngOnInit(){
+    var status = localStorage.getItem("examStatus");
+    if(status){
+      this.status = status
+    }
+  }
+
   start(mode){
     this.mode = mode;
     this.status = 'started'
+    localStorage.setItem('examStatus', this.status);
   }
+
   changeMode(){
 
   }
@@ -32,7 +42,7 @@ export default class ExamComponent   {
   }
 
   getAllStatus(){
-  return this.status;
+    return this.status;
   }
   getAllPart(){
     return this.part;
