@@ -8,16 +8,38 @@ import { DataService } from './services/data.service';
 })
 
 export class AppComponent {
-  title = 'Hamateur';
-  isRegistered:boolean = false;
-  services:any = {};
+  public title:string = 'Hamateur';
+  public view:string = 'default';
+  public candidate = null;
+  public exam;
+  public api;
 
-   constructor( private api:DataService) {
-     this.services.api = api;
+  constructor( private data:DataService) {
+    this.api = data;
+  }
+
+   async ngOnInit(){
+     var uuid = localStorage.getItem("candidate");
+     if(uuid){
+       this.candidate = await this.api.getCandidate(uuid);
+       this.candidate.isRegistered = (null !== this.candidate);
+       return;
+     }
+     console.log(this.candidate);
    }
 
-  async  ngOnInit(){
-    }
+   refreshCandidate(candidate){
+     console.log("refreshing candidate");
+     this.candidate = candidate;
+     localStorage.setItem('candidate', this.candidate.uuid)
+     console.log(candidate);
+   }
 
+   logout(){
+     console.log("LOGOUT FROM App COMPONENENT ! ! remove local storage")
+     localStorage.removeItem('candidate');
+     localStorage.removeItem('examStatus');
+     this.candidate  = false;
+   }
 
 }

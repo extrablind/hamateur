@@ -16,6 +16,20 @@ export class DataService {
                         .then(r => {return r });
     }
 
+    saveExam(datas){
+      return this.http.post(this.url + "/exam/save", datas)
+                        .toPromise()
+                        .then(exam => {return exam });
+    }
+
+
+    getExamScore(datas){
+      return this.http.post(this.url + "/exam/get-score", datas)
+                        .toPromise()
+                        .then(score => {return score });
+    }
+
+
    createCandidate(name){
      return this.http.post(this.url + "/candidate/create", {name:name})
                        .toPromise()
@@ -23,7 +37,6 @@ export class DataService {
     }
 
     getCandidate(uuid){
-      console.log(uuid)
       let headers = new HttpHeaders();
             let params = new HttpParams();
             params = params.append('uuid',uuid);

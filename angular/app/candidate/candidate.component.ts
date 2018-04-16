@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataService } from '../services/data.service';
 import { Router } from '@angular/router'
@@ -9,7 +9,6 @@ import { Router } from '@angular/router'
 })
 
 export default class CandidateComponent {
-  public candidate:any = false;
   public name:any;
   public isRegistered:boolean =false;
   public uuid:any;
@@ -18,6 +17,13 @@ export default class CandidateComponent {
   public retrieveCandidateForm;
   public formGroup:FormGroup;
   public isLoading:boolean = true;
+  public errors = {
+    noCandidateFound :false,
+    candidateNotFound :false
+  };
+
+  @Output() onCandidateChange = new EventEmitter();
+  @Input() candidate;
 
   onKey(event: any) {
     this.name = event.target.value;
@@ -41,29 +47,36 @@ export default class CandidateComponent {
     })
   }
 
-    async ngOnInit(){
-      var uuid = localStorage.getItem("candidate");
-      if(uuid){
-        this.candidate = await this.dataService.getCandidate(uuid);
-        this.isRegistered = (null !== this.candidate);
-      }
-      this.isLoading = false;
-    }
+  retrieveFormIsInvalid(){
+    return (!this.retrieveCandidateForm.controls['uuid'].valid  || this.errors.noCandidateFound) && this.retrieveCandidateForm.controls['uuid'].touched;
+  }
+
 
     async newCandidate(name){
         var candidate = await this.dataService.createCandidate(name);
         localStorage.setItem('candidate', candidate.uuid);
-        this.isRegistered = true;
-
+        if(!candidate){
+          return;
+        }
+        this.candidate = candidate;
+        this.candidate.isRegistered = true;
+        this.candidate.created = true;
+        console.log("emittedCandidateCreationEvent" )
+        this.onCandidateChange.emit(candidate)
       }
 
-    async retrieveCandidate(candidate){
-      this.candidate = await this.dataService.getCandidate(candidate);
-      this.isRegistered = (null !== this.candidate);
-
-      if(this.isRegistered === null){
-        alert("No candidate found, try again");
+    async submitRetrieveCandidate(candidate){
+      var c = await this.dataService.getCandidate(candidate.uuid);
+      console.log(c)
+      if(null === c){
+        this.errors.noCandidateFound = true;
+        return;
       }
+      this.candidate = c;
+      this.candidate.isRegistered = true;
+      this.candidate.new = false;
+      this.onCandidateChange.emit(this.candidate)
+
     }
 
 

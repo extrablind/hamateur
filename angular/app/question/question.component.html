@@ -1,4 +1,8 @@
-<div class="row">
+<div *ngIf="!questions" class="row">
+  <button type="button" id="questionLoader" class="btn btn-primary disabled "> <i class="fa fa-spinner fa-3x fa-spin "></i></button>
+</div>
+
+<div *ngIf="questions" class="row">
   <div class="col-lg-7">
     <div class="card">
       <div class="card-header">
@@ -48,7 +52,7 @@
           <button *ngIf="step!=='technical' " class="btn btn-warning btn-sm" (click)="changeStep('technical') ">
             Finir cette partie
           </button>
-          <button *ngIf="step==='technical' " class="btn btn-danger btn-sm" (click)="end() ">
+          <button *ngIf="step==='technical' " class="btn btn-danger btn-sm" (click)="changeStep('end') ">
             Finir l'examen
           </button>
 
@@ -73,6 +77,10 @@
                 <tr *ngIf="questions[selected].id ">
                   <th width="60%">Question Id</th>
                   <td>{{questions[selected].id }}</td>
+                </tr>
+                <tr *ngIf="questions[selected].id ">
+                  <th width="60%">System Id</th>
+                  <td>#{{questions[selected].systemId }}</td>
                 </tr>
                 <tr>
                   <th width="60%">Nom Famille</th>

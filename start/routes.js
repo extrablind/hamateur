@@ -26,7 +26,7 @@ Route.group('api', function() {
     Route.get('/candidate/get', 'CandidateController.get').as('get-candidate');
 
     Route.post('/exam/correct', 'ExamController.correction');
-
+    Route.post('/exam/save', 'ExamController.save');
 
     Route.get('/questions/get', 'QuestionController.get').as('get-candidate');
 

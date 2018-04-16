@@ -17,6 +17,68 @@ class ExamController {
      	return view.render('start');
   }
 
+
+
+    async save({session, request, response, view }){
+      const {questions, candidate} = request.post();
+      var answer = new Answer();
+      answer.
+      /*
+      table.increments()
+      table.datetime('answeredAt')
+      table.datetime('modifiedAt')
+      table.integer('question_id')
+      table.integer('choice_id')
+      table.integer('exam_id')
+      table.integer('candidate_id')
+      table.timestamps()
+      */
+
+      //
+      for(let i=0; i<questions.length;i++){
+        // No answer, score is unchanged
+        if(!questions[i].answered){
+          continue;
+        }
+        var question = await Question.query().with('choices').where({id: questions[i].id}).fetch();
+        question = question.toJSON()[0];
+        var goodChoice =    _.filter(question.choices, ['isGoodAnswer', 1])[0];
+        var selectedChoice =  _.filter(questions[i].choices, ['selected', true])[0];
+        // Good answer
+        if(goodChoice.id == selectedChoice.id){
+            score+= 2
+        }
+        // Bad answer
+        else{
+            score-= 3
+        }
+      }
+
+      return response.send(candidate);
+
+      var score = 0;
+      for(let i=0; i<questions.length;i++){
+        // No answer, score is unchanged
+        if(!questions[i].answered){
+          continue;
+        }
+        var question = await Question.query().with('choices').where({id: questions[i].id}).fetch();
+        question = question.toJSON()[0];
+        var goodChoice =    _.filter(question.choices, ['isGoodAnswer', 1])[0];
+        var selectedChoice =  _.filter(questions[i].choices, ['selected', true])[0];
+        // Good answer
+        if(goodChoice.id == selectedChoice.id){
+            score+= 2
+        }
+        // Bad answer
+        else{
+            score-= 3
+        }
+      }
+      // Score thresold
+      response.send({exam})
+    }
+
   async correction({session, request, response, view }){
     const questions = request.post();
     var score = 0;

@@ -11,19 +11,10 @@
       <li class="nav-item">
         <a routerLink="/exam" class="nav-link" href="#">Examen</a>
       </li>
+      <li class="nav-item">
+      </li>
     </ul>
-    <div class="my-2 my-lg-0">
-      <div class="btn-group">
-        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          
-  </button>
-        <div class="dropdown-menu dropdown-menu-right">
-          <button class="dropdown-item" type="button">Empty action</button>
-          <button class="dropdown-item" type="button">Another empty action</button>
-          <button class="dropdown-item" type="button">Something else here like logout</button>
-        </div>
-      </div>
-    </div>
+    <app-registered (onCandidateLogout)="logout($event)" [candidate]="candidate"></app-registered>
   </div>
 </nav>
 <br/>
@@ -31,5 +22,10 @@
 <br/>
 <br/>
 <div class="container-fluid">
-  <app-candidate></app-candidate>
+  <div *ngIf="!candidate">
+    <app-candidate (onCandidateChange)="refreshCandidate($event)" [candidate]="candidate"></app-candidate>
+  </div>
+  <div *ngIf="candidate">
+    <app-exam [candidate]="candidate"></app-exam>
+  </div>
 </div>

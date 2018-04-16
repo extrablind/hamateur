@@ -1,0 +1,10 @@
+<div *ngIf="candidate" class="my-2 my-lg-0">
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {{candidate.name}}
+    </button>
+    <div class="dropdown-menu dropdown-menu-right">
+      <button (click)="logout()" class="dropdown-item" type="button">Déconnexion</button>
+    </div>
+  </div>
+</div>

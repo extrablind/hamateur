@@ -1,31 +1,42 @@
-<div *ngIf="!isLoading">
-  <div *ngIf="!isRegistered">
-    <h2>First time here, enter your name ?</h2>
-    <form [formGroup]="newCandidateForm" (ngSubmit)="newCandidate(newCandidateForm.value)">
-      <input type="text" [(ngModel)]="name" formControlName="name" placeholder="Your candidate name">
-      <div class="alert" *ngIf="!newCandidateForm.controls['name'].valid && newCandidateForm.controls['name'].touched">
-        Please enter a candidate name with minimum 4 characters.
+<div class="row ">
+  <div class="col-lg-6 ">
+    <div class="card ">
+      <div class="card-header ">
+        C'est votre première fois...
       </div>
-      <p>Votre nom sera : "{{ name }}" continuer ?</p>
-      <button [disabled]="!newCandidateForm.valid" class="btn btn-primary" type="submit">Begin</button>
-    </form>
+      <div class="card-body ">
+        <form [formGroup]="newCandidateForm " (ngSubmit)="newCandidate(newCandidateForm.value) ">
+          <input [ngClass]="{'is-invalid':!newCandidateForm.controls['name'].valid && newCandidateForm.controls[ 'name'].touched } " class="form-control" type="text" [(ngModel)]="name" formControlName="name" placeholder="Entrez votre nom de candidat">
+          <div class="invalid-feedback" *ngIf="!newCandidateForm.controls['name'].valid && newCandidateForm.controls[ 'name'].touched ">
+            <ul>
+              <li>Entrez au minimum 4 caractères</li>
+            </ul>
+          </div>
 
-    <h2>You already have candidate number ?</h2>
-    <form [formGroup]="retrieveCandidateForm" (ngSubmit)="retrieveCandidate(retrieveCandidateForm.value)">
-      <input type="text" [(ngModel)]="uuid" formControlName="uuid" placeholder="Your candidate identifier">
-      <p>8e0d8eb8-0525-4298-b99a-06cc910de3a7</p>
-      <div class="alert" *ngIf="!retrieveCandidateForm.controls['uuid'].valid && retrieveCandidateForm.controls['uuid'].touched">
-        Enter correct id
+          <p *ngIf="name">Votre nom sera : <strong><i>{{ name }}</i></strong> continuer ?</p>
+          <button [disabled]="!newCandidateForm.valid" class="btn btn-primary" type="submit">Commencer</button>
+        </form>
       </div>
-      <p *ngIf="candidateExists">
-        Votre identifiant <b>{{ uuid }}</b> existe et correspond au nom <b>{{ name }}</b>
-      </p>
-      <button [disabled]="!retrieveCandidateForm.valid" class="btn btn-primary" ngClick="retrieveCandidateForm()" type="submit">Continuer</button>
-    </form>
+    </div>
+    <br/>
   </div>
+  <div class="col-lg-6 ">
+    <div class="card ">
+      <div class="card-header ">
+        Vous avez déjà un numéro de candidat...
+      </div>
+      <div class="card-body ">
+        <form [formGroup]="retrieveCandidateForm " (ngSubmit)="submitRetrieveCandidate(retrieveCandidateForm.value) ">
+          <input [ngClass]="{'is-invalid':retrieveFormIsInvalid() } " class="form-control" type="text " [(ngModel)]="uuid " formControlName="uuid" placeholder="Numéro de candidat">
+          <div class="invalid-feedback" *ngIf="retrieveFormIsInvalid()">
+            <ul>
+              <li *ngIf="errors.noCandidateFound">Aucun candidat avec ce numéro</li>
+              <li *ngIf="!retrieveCandidateForm.controls[ 'uuid'].valid">Champs invalide. Vérifiez votre saisie</li>
+            </ul>
+          </div>
 
-  <div *ngIf="isRegistered">
-    <app-exam [candidate]="candidate"></app-exam>
+          <button [disabled]="!retrieveCandidateForm.valid" class="btn btn-primary " ngClick="retrieveCandidateForm() " type="submit ">Vérifier</button>
+        </form>
+      </div>
+    </div>
   </div>
-
-</div>

@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter} from '@angular/core';
 import Candidate from '../candidate/candidate.component';
+import { DataService } from '../services/data.service';
 
 @Component({
   selector: 'app-exam',
@@ -13,18 +14,27 @@ export default class ExamComponent   {
   // All mode for current exam
   public time:any = new Date();
   public status:string = "pending";
-  public part:number = 1;
   // real or free
   public mode:string = 'real';
+  private api;
 
-  constructor() {
-
-  }
   async ngOnInit(){
     var status = localStorage.getItem("examStatus");
     if(status){
       this.status = status
     }
+  }
+
+    constructor( private data:DataService) {
+      this.api = data;
+    }
+
+  async save(questions){
+    console.log("Exam ended, save answers")
+    var exam    = await this.api.saveExam({questions: questions, candidate : this.candidate});
+    //var correct = await this.dataService.getScore(exam);
+    console.log("CORRECT");
+    console.log(exam);
   }
 
   start(mode){
@@ -33,23 +43,9 @@ export default class ExamComponent   {
     localStorage.setItem('examStatus', this.status);
   }
 
-  changeMode(){
-
+  updateStatus(status){
+    this.status = status
+    localStorage.setItem('examStatus', this.status);
   }
-
-  getQuestions(){
-
-  }
-
-  getAllStatus(){
-    return this.status;
-  }
-  getAllPart(){
-    return this.part;
-  }
-
-
-
-
 
 }

@@ -20,23 +20,31 @@ export default class QuestionComponent {
     public step:string='legal'
     public score=0
     public passing=false
-    public isLoading=true
+    public isLoading = false;
     public answered={}
     private originalQuestionsData;
 
-
-    @Output() nextQuestionClick = new EventEmitter();
-    @Output() previousQuestionClick = new EventEmitter();
+    @Output() onExamIsEnded = new EventEmitter();
     @Input() exam;
 
     constructor(datas:DataService) {
       this.datas = datas
     }
 
+    public endExamEmitter(){
+      console.log("Exam is ended. Starting emitter ")
+    }
+
     async ngOnInit(){
-        var questions = await this.datas.getQuestions();
-        this.originalQuestionsData = questions
-        this.questions = questions[this.step]
+        this.isLoading = true
+        var questions;
+        if(typeof this.answered[this.step] !== 'undefined'){
+          questions = this.answered[this.step];
+        }else{
+          var questions = await this.datas.getQuestions();
+          this.questions = questions[this.step]
+          this.originalQuestionsData = questions
+        }
         this.refreshNavigationStatus()
         this.isLoading = false;
     }
@@ -57,6 +65,10 @@ export default class QuestionComponent {
 
     changeStep(toStep){
       this.answered[this.step] = this.questions;
+      if(toStep === 'end'){
+        this.onExamIsEnded.emit(this.answered);
+        return;
+      }
       // Already done, reload old
       if(typeof this.answered[toStep] !== 'undefined'){
         this.questions = this.answered[toStep];
@@ -67,6 +79,8 @@ export default class QuestionComponent {
       this.next = true
       this.step = toStep
       this.selected = 0
+      this.score = 0
+
     }
       isAnswered(question){
         for (let i = 0; i < question.choices.length ; i++) {

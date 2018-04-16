@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import  ExamComponent  from './exam/exam.component';
 import  CandidateComponent  from './candidate/candidate.component';
 import  QuestionComponent  from './question/question.component';
+import  CountdownComponent  from './countdown/countdown.component';
+import  RegisteredComponent  from './registered/registered.component';
 // services
 import { DataService } from './services/data.service';
 
@@ -21,7 +23,6 @@ const appRoutes: Routes = [
   { path: 'exam', component: ExamComponent },
   { path: 'questions', component: QuestionComponent },
   { path: 'candidate', component: CandidateComponent },
-  //  { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
@@ -29,7 +30,9 @@ const appRoutes: Routes = [
     AppComponent,
     ExamComponent,
     QuestionComponent,
-    CandidateComponent
+    CandidateComponent,
+    CountdownComponent,
+    RegisteredComponent
   ],
   imports: [
     BrowserModule,
