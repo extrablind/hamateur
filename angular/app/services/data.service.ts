@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders, HttpParams } from '@angular/common/http';
-const _ = require('lodash');
-  
+// const _ = require('lodash');
+import * as _ from 'lodash'
+
 @Injectable()
 export class DataService {
 
