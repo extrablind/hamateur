@@ -12,21 +12,26 @@
         <a routerLink="/exam" class="nav-link" href="#">Examen</a>
       </li>
       <li class="nav-item">
-        <app-countdown [inputDate]="counter"></app-countdown>
       </li>
     </ul>
-    <app-registered (onCandidateLogout)="logout($event)" [candidate]="candidate"></app-registered>
+    <app-registered (onCandidateLogout)=" logout($event) " [candidate]="candidate "></app-registered>
+
+    <button (click)="timer.start()">Start</button>
+    <button (click)="timer.stop()">Stop</button>
+    <div class="seconds">{{timer.seconds}}</div>
+    <app-countdown-timer #timer></app-countdown-timer>
+
   </div>
 </nav>
 <br/>
 <br/>
 <br/>
 <br/>
-<div class="container-fluid">
-  <div *ngIf="!candidate">
-    <app-candidate (onCandidateChange)="refreshCandidate($event)" [candidate]="candidate"></app-candidate>
+<div class="container-fluid ">
+  <div *ngIf="!candidate ">
+    <app-candidate (onCandidateChange)="refreshCandidate($event) " [candidate]="candidate "></app-candidate>
   </div>
-  <div *ngIf="candidate">
-    <app-exam (onExamChangeStatus)="updateCounter($event)" [candidate]="candidate"></app-exam>
+  <div *ngIf="candidate ">
+    <app-exam (onExamStatusChanged)="timer.stop($event) " [candidate]="candidate "></app-exam>
   </div>
 </div>

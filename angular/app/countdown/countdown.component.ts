@@ -3,7 +3,7 @@ import { Observable, Subscription } from 'rxjs/Rx';
 import * as moment from 'moment';
 
 @Component({
-    selector: 'app-countdown',
+    selector: 'app-countdown-timer',
     template: `
   <div>
   <button class="btn btn-success btn-lg disabled" [ngClass]="{ 'btn-danger':noMoreTime } ">
@@ -14,18 +14,83 @@ import * as moment from 'moment';
 })
 export default class CountdownComponent {
 
-    private future;
-    private futureString: string;
-    private diff: number;
+  private future;
+  private diff: number;
     private $counter: Observable<number>;
     private subscription: Subscription;
     private message: string;
     private noMoreTime = false;
-    @Input() inputDate;
+    private started = false;
+    @Input() futureString;
+    @Input() update = false;
+
+
+      intervalId = 0;
+      seconds = 30;
+
+      clearTimer() { clearInterval(this.intervalId); }
+
+      ngOnInit()    { this.start(); }
+      ngOnDestroy() { this.clearTimer(); }
+
+      start() {
+        console.log("started because changed exam status ?");
+        this.countDown(); }
+      stop()  {
+        console.log("Stopped");
+        this.clearTimer();
+        this.message = `Holding at T-${this.seconds} seconds`;
+      }
+
+      private countDown() {
+        this.clearTimer();
+        this.intervalId = window.setInterval(() => {
+          this.seconds -= 1;
+          if (this.seconds === 0) {
+            this.message = 'Blast off!';
+          } else {
+            if (this.seconds < 0) { this.seconds = 10; } // reset
+            this.message = `T-${this.seconds} seconds and counting`;
+          }
+        }, 1000);
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+      /*
+
+
+
 
     constructor(elm: ElementRef) {
+      console.log("CONSTRUCTOR");
+      console.log(this.futureString);
       // inputDate="January 1, 2019 12:00:00"
-      this.futureString = this.inputDate
+      if(this.futureString){
+        this.started = true;
+      }
+
+      if(this.update){
+        this.refresh(this.futureString);
+      }
+
+    }
+    stop(){
+      this.started = false;
+    }
+
+    start(){
+      this.started = true;
     }
 
     dhms(t) {
@@ -58,16 +123,22 @@ export default class CountdownComponent {
     }
 
 
+    refresh(date){
+      this.future = date;
+      this.$counter = Observable.interval(200).map((x) => {
+          this.diff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
+          return x;
+      });
+      this.subscription = this.$counter.subscribe((x) => this.message = this.dhms(this.diff));
+      this.update = false;
+    }
+
     ngOnInit() {
-        this.future = new Date(this.futureString);
-        this.$counter = Observable.interval(200).map((x) => {
-            this.diff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
-            return x;
-        });
-        this.subscription = this.$counter.subscribe((x) => this.message = this.dhms(this.diff));
+        this.refresh(this.future);
     }
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
+    */
 }

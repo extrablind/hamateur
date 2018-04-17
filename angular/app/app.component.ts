@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { DataService } from './services/data.service';
 import * as moment from 'moment';
+import  CountdownComponent  from './countdown/countdown.component';
 
 @Component({
   selector: 'app-root',
@@ -15,16 +16,12 @@ export class AppComponent {
   public exam;
   public counter;
   public api;
+  public counterIsUpdated;
 
   constructor( private data:DataService) {
     this.api = data;
   }
-  react(status){
-    if(status === "ended"){
-      return;
-    }
-    this.restart(20)
-  }
+
    async ngOnInit(){
      var uuid = localStorage.getItem("candidate");
      if(uuid){
@@ -35,24 +32,24 @@ export class AppComponent {
      console.log(this.candidate);
    }
 
-   startCountdown(){
-     console.log("Event emitted and received : countdown starts")
-   }
 
-   setCounterFutureDate(minutes){
+   setEndInMinutes(minutes){
+     console.log(this.counter);
      let now = moment();
      this.counter = now.add(minutes, 'minutes').toDate();
+     this.counterIsUpdated = true;
      console.log(this.counter);
    }
 
-   updateCounter(status){
+   updateCountdown(status){
+     console.log("Will update coundown")
+     console.log(status);
      if(status == 'started'){
-       counterDate = setCounterFutureDate(20)
+       this.counter = this.setEndInMinutes(20)
      }else{
-       counterDate = false
+       this.counter = false
      }
    }
-
 
    refreshCandidate(candidate){
      console.log("refreshing candidate");

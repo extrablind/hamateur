@@ -13,7 +13,7 @@ export default class ExamComponent   {
   @Input() candidate:Candidate;
   @Input() countdown:Countdown;
   @Output() onExamStarts = new EventEmitter();
-  @Output() onExamChangeStatus = new EventEmitter();
+  @Output() onExamStatusChanged = new EventEmitter();
 
   // All mode for current exam
   public time:any = new Date();
@@ -43,7 +43,7 @@ export default class ExamComponent   {
     this.status = status
     console.log("Exam changed status to : " + this.status)
     localStorage.setItem('examStatus', this.status);
-    this.onExamChangeStatus.emit(this.status)
+    this.onExamStatusChanged.emit(this.status)
   }
 
   start(){

@@ -26,8 +26,7 @@ export default class QuestionComponent {
 
     @Output() onExamIsEnded     = new EventEmitter();
     @Output() onChangeStep  = new EventEmitter();
-    @Input() exam;
-
+    
     constructor(datas:DataService) {
       this.datas = datas
     }
