@@ -26,7 +26,7 @@ export default class QuestionComponent {
 
     @Output() onExamIsEnded     = new EventEmitter();
     @Output() onChangeStep  = new EventEmitter();
-    
+
     constructor(datas:DataService) {
       this.datas = datas
     }
@@ -63,13 +63,16 @@ export default class QuestionComponent {
       })
     }
 
+    end(){
+      this.onExamIsEnded.emit(this.answered);
+      localStorage.setItem('examStatus', 'ended');
+      return;
+    }
+
     changeStep(toStep){
       this.answered[this.step] = this.questions;
-      if(toStep === 'end'){
-        this.onExamIsEnded.emit(this.answered);
-        localStorage.setItem('examStatus', 'ended');
-        return;
-      }
+      this.onChangeStep.emit(toStep);
+
       // Already done, reload old
       if(typeof this.answered[toStep] !== 'undefined'){
         this.questions = this.answered[toStep];

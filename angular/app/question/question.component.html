@@ -52,7 +52,7 @@
           <button *ngIf="step!=='technical' " class="btn btn-warning btn-sm" (click)="changeStep('technical') ">
             Passer à la partie technique
           </button>
-          <button *ngIf="step==='technical' " class="btn btn-danger btn-sm" (click)="changeStep('end') ">
+          <button *ngIf="step==='technical' " class="btn btn-danger btn-sm" (click)="end() ">
             Finir l'examen
           </button>
 

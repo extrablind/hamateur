@@ -16,9 +16,6 @@
     </ul>
     <app-registered (onCandidateLogout)=" logout($event) " [candidate]="candidate "></app-registered>
 
-    <button (click)="timer.start()">Start</button>
-    <button (click)="timer.stop()">Stop</button>
-    <div class="seconds">{{timer.seconds}}</div>
     <app-countdown-timer #timer></app-countdown-timer>
 
   </div>
@@ -32,6 +29,6 @@
     <app-candidate (onCandidateChange)="refreshCandidate($event) " [candidate]="candidate "></app-candidate>
   </div>
   <div *ngIf="candidate ">
-    <app-exam (onExamStatusChanged)="timer.stop($event) " [candidate]="candidate "></app-exam>
+    <app-exam (onExamEnd)="timer.default()" (onChangeStep)="timer.restart(20)" (onExamBegin)="timer.restart(20)" [candidate]="candidate"></app-exam>
   </div>
 </div>

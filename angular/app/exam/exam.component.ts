@@ -12,25 +12,34 @@ import { DataService } from '../services/data.service';
 export default class ExamComponent   {
   @Input() candidate:Candidate;
   @Input() countdown:Countdown;
-  @Output() onExamStarts = new EventEmitter();
+  @Output() onExamBegin = new EventEmitter();
+  @Output() onExamEnd = new EventEmitter();
+  @Output() onChangeStep = new EventEmitter();
   @Output() onExamStatusChanged = new EventEmitter();
-
   // All mode for current exam
   public time:any = new Date();
   public status:string = "pending";
   // real or free
   public mode:string = 'real';
   private api;
+  public timer;
 
   async ngOnInit(){
+    /*
     var status = localStorage.getItem("examStatus");
     if(status){
       this.status = status
     }
+    */
   }
 
     constructor( private data:DataService) {
       this.api = data;
+    }
+
+    changeStep(step){
+      console.log("Changing state from exam")
+      this.onChangeStep.emit(step);
     }
 
   async save(parts){
@@ -43,7 +52,15 @@ export default class ExamComponent   {
     this.status = status
     console.log("Exam changed status to : " + this.status)
     localStorage.setItem('examStatus', this.status);
-    this.onExamStatusChanged.emit(this.status)
+    switch (status){
+      case 'started' :
+        this.onExamBegin.emit();
+        break;
+      case 'ended' :
+      console.log("will emit stop event");
+        this.onExamEnd.emit();
+        break;
+      }
   }
 
   start(){
