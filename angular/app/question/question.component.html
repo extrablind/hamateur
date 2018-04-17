@@ -42,15 +42,15 @@
   <div class="col-lg-5">
     <div class=" card ">
       <div class="card-header">
-        Informations
-        <div class="float-right float-sm-right">
+        Liste des questions
 
+        <div class="float-right float-sm-right">
           <button class="btn btn-warning btn-sm" (click)="changeStep('legal') ">
-           partie legale
+           Partie légale
           </button>
 
           <button *ngIf="step!=='technical' " class="btn btn-warning btn-sm" (click)="changeStep('technical') ">
-            Finir cette partie
+            Passer à la partie technique
           </button>
           <button *ngIf="step==='technical' " class="btn btn-danger btn-sm" (click)="changeStep('end') ">
             Finir l'examen
@@ -59,55 +59,18 @@
         </div>
       </div>
       <div class="card-body ">
-        <div class="row ">
-          <div class="col-lg-5">
-            <button type="button " class="btn btn-block btn-sm btn-primary " (click)="correct() ">
+        <div class="row">
+          <div class="col-lg-12">
+            <button type="button " class="btn btn-sm btn-primary " (click)="correct() ">
               <i *ngIf="isLoading"  class="fa fa-spin fa-spinner"></i>
               <span *ngIf="!isLoading">Correct</span>
             </button>
-            <button type="button" [ngClass]="{ 'btn-success':passing } " class="btn btn-block btn-secondary disabled btn-error">
+            <button type="button" [ngClass]="{ 'btn-success':passing } " class="btn btn-secondary disabled btn-error">
               <i class="far fa-check-circle " *ngIf="passing "></i>
               <i class="far fa-times-circle " *ngIf="!passing "></i> Score {{score}}
             </button>
-          </div>
 
-          <div class="col-lg-7">
-            <table class="table table-sm ">
-              <tbody>
-                <tr *ngIf="questions[selected].id ">
-                  <th width="60%">Question Id</th>
-                  <td>{{questions[selected].id }}</td>
-                </tr>
-                <tr *ngIf="questions[selected].id ">
-                  <th width="60%">System Id</th>
-                  <td>#{{questions[selected].systemId }}</td>
-                </tr>
-                <tr>
-                  <th width="60%">Nom Famille</th>
-                  <td>
-                    <span *ngIf="!questions[selected].family">-</span>
-                    <span *ngIf="questions[selected].family">{{questions[selected].family.name }}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th width="60%">Code Famille Code</th>
-                  <td>
-                    <span *ngIf="!questions[selected].family">-</span>
-                    <span *ngIf="questions[selected].family">{{questions[selected].family.code }}</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
-        </div>
-        <hr/>
-      </div>
-
-      <div class="card-header">
-        Liste des questions
-      </div>
-      <div class="card-body ">
-        <div class="row">
           <div class="col-lg-6">
             <ul class="list-group list-group-sm">
               <li *ngFor="let question of questions | slice:0:10; let i=index " [ngClass]="{ 'active':selected == i } " (click)="changeQuestion($event,i) " class="list-group-item">
@@ -136,6 +99,43 @@
           </div>
         </div>
       </div>
+
+      <div class="card-header">
+        Informations
+      </div>
+      <div class="card-body ">
+        <div class="row ">
+          <div class="col-lg-12">
+            <table class="table table-sm ">
+              <tbody>
+                <tr *ngIf="questions[selected].id ">
+                  <th width="60%">Question Id</th>
+                  <td>{{questions[selected].id }}</td>
+                </tr>
+                <tr *ngIf="questions[selected].id ">
+                  <th width="60%">System Id</th>
+                  <td>#{{questions[selected].systemId }}</td>
+                </tr>
+                <tr>
+                  <th width="60%">Nom Famille</th>
+                  <td>
+                    <span *ngIf="!questions[selected].family">-</span>
+                    <span *ngIf="questions[selected].family">{{questions[selected].family.name }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th width="60%">Code Famille Code</th>
+                  <td>
+                    <span *ngIf="!questions[selected].family">-</span>
+                    <span *ngIf="questions[selected].family">{{questions[selected].family.code }}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
 
     </div>
     <hr/>

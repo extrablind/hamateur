@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, EventEmitter} from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
 import Candidate from '../candidate/candidate.component';
+import Countdown from '../countdown/countdown.component';
 import { DataService } from '../services/data.service';
 
 @Component({
@@ -10,6 +11,9 @@ import { DataService } from '../services/data.service';
 
 export default class ExamComponent   {
   @Input() candidate:Candidate;
+  @Input() countdown:Countdown;
+  @Output() onExamStarts = new EventEmitter();
+  @Output() onExamChangeStatus = new EventEmitter();
 
   // All mode for current exam
   public time:any = new Date();
@@ -29,23 +33,21 @@ export default class ExamComponent   {
       this.api = data;
     }
 
-  async save(questions){
+  async save(parts){
     console.log("Exam ended, save answers")
-    var exam    = await this.api.saveExam({questions: questions, candidate : this.candidate});
-    //var correct = await this.dataService.getScore(exam);
-    console.log("CORRECT");
-    console.log(exam);
+    this.setStatus('ended')
+    var exam    = await this.api.saveExam({parts: parts, candidate : this.candidate});
   }
 
-  start(mode){
-    this.mode = mode;
-    this.status = 'started'
-    localStorage.setItem('examStatus', this.status);
-  }
-
-  updateStatus(status){
+  setStatus(status){
     this.status = status
+    console.log("Exam changed status to : " + this.status)
     localStorage.setItem('examStatus', this.status);
+    this.onExamChangeStatus.emit(this.status)
+  }
+
+  start(){
+    this.setStatus('started')
   }
 
 }

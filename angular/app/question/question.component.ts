@@ -24,7 +24,8 @@ export default class QuestionComponent {
     public answered={}
     private originalQuestionsData;
 
-    @Output() onExamIsEnded = new EventEmitter();
+    @Output() onExamIsEnded     = new EventEmitter();
+    @Output() onChangeStep  = new EventEmitter();
     @Input() exam;
 
     constructor(datas:DataService) {
@@ -67,6 +68,7 @@ export default class QuestionComponent {
       this.answered[this.step] = this.questions;
       if(toStep === 'end'){
         this.onExamIsEnded.emit(this.answered);
+        localStorage.setItem('examStatus', 'ended');
         return;
       }
       // Already done, reload old

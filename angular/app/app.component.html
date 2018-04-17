@@ -12,6 +12,7 @@
         <a routerLink="/exam" class="nav-link" href="#">Examen</a>
       </li>
       <li class="nav-item">
+        <app-countdown [inputDate]="counter"></app-countdown>
       </li>
     </ul>
     <app-registered (onCandidateLogout)="logout($event)" [candidate]="candidate"></app-registered>
@@ -26,6 +27,6 @@
     <app-candidate (onCandidateChange)="refreshCandidate($event)" [candidate]="candidate"></app-candidate>
   </div>
   <div *ngIf="candidate">
-    <app-exam [candidate]="candidate"></app-exam>
+    <app-exam (onExamChangeStatus)="updateCounter($event)" [candidate]="candidate"></app-exam>
   </div>
 </div>

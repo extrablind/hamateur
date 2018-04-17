@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders, HttpParams } from '@angular/common/http';
+const _ = require('lodash');
 
 @Injectable()
 export class DataService {
@@ -21,7 +22,6 @@ export class DataService {
                         .toPromise()
                         .then(exam => {return exam });
     }
-
 
     getExamScore(datas){
       return this.http.post(this.url + "/exam/get-score", datas)
@@ -50,7 +50,18 @@ export class DataService {
             let params = new HttpParams();
      return this.http.get(this.url + "/questions/get", {headers, params})
        .toPromise()
-       .then(result => { return result });
+       .then(parts => {
+         // Add some angular technical fields here
+         _.forEach(parts, function(questions, partName) {
+           _.forEach(questions, function(question, i) {
+             parts[partName][i].answered = false;
+             _.forEach(question.choices, function(choice, j) {
+               parts[partName][i].choices[j].selected = false;
+             });
+           });
+         });
+         console.log(parts)
+         return parts });
     }
 
 }

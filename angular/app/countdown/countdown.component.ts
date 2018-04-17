@@ -1,27 +1,31 @@
-import { Component,  ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Component,  ElementRef, OnInit, OnDestroy, Input} from '@angular/core';
 import { Observable, Subscription } from 'rxjs/Rx';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-countdown',
     template: `
   <div>
-  <span class="badge badge-danger">
+  <button class="btn btn-success btn-lg disabled" [ngClass]="{ 'btn-danger':noMoreTime } ">
     {{message}}
-    </span>
+    </button>
   </div>
 `
 })
 export default class CountdownComponent {
 
-    private future: Date;
+    private future;
     private futureString: string;
     private diff: number;
     private $counter: Observable<number>;
     private subscription: Subscription;
     private message: string;
+    private noMoreTime = false;
+    @Input() inputDate;
 
     constructor(elm: ElementRef) {
-        this.futureString = elm.nativeElement.getAttribute('inputDate');
+      // inputDate="January 1, 2019 12:00:00"
+      this.futureString = this.inputDate
     }
 
     dhms(t) {
@@ -34,22 +38,32 @@ export default class CountdownComponent {
         t -= minutes * 60;
         seconds = t % 60;
 
+        if(minutes <= 5){
+          this.noMoreTime = true;
+        }
+
+        if(isNaN(minutes)){
+          minutes = '--';
+        }
+        if(isNaN(seconds)){
+          seconds = '--';
+        }
+
         return [
-            days + 'd',
-            hours + 'h',
-            minutes + 'm',
-            seconds + 's'
-        ].join(' ');
+            //days + 'd',
+            //hours + 'h',
+            minutes ,
+            seconds
+        ].join(':');
     }
 
 
     ngOnInit() {
         this.future = new Date(this.futureString);
-        this.$counter = Observable.interval(1000).map((x) => {
+        this.$counter = Observable.interval(200).map((x) => {
             this.diff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
             return x;
         });
-
         this.subscription = this.$counter.subscribe((x) => this.message = this.dhms(this.diff));
     }
 
