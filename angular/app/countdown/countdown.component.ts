@@ -25,11 +25,8 @@ export default class CountdownComponent {
     @Input() update = false;
     @Output() onTimeIsUp = new EventEmitter();
 
-
       intervalId = 0;
-      seconds = 30;
 
-      clearTimer() { clearInterval(this.intervalId); }
 
       ngOnInit()    {
         this.message = `--:--`;
@@ -47,53 +44,56 @@ export default class CountdownComponent {
         this.clearTimer();
       }
 
+      clearTimer() { clearInterval(this.intervalId); }
+
       private countDown() {
         this.clearTimer();
         this.$counter = Observable.interval(200).map((x) => {
             this.diff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
-            return x;
+            return this.diff;
         });
-        this.subscription = this.$counter.subscribe((x) => this.message = this.dhms(this.diff));
+        this.subscription = this.$counter.subscribe((x) => {
+          this.message = this.dhms(this.diff)
+        });
       }
 
       dhms(t) {
-          var days, hours, minutes, seconds;
-          days = Math.floor(t / 86400);
+          var days = Math.floor(t / 86400);
+          var hours = Math.floor(t / 3600) % 24;
+          var minutes = Math.floor(t / 60) % 60;
+          var seconds = t % 60;
+          var string = ""
           t -= days * 86400;
-          hours = Math.floor(t / 3600) % 24;
           t -= hours * 3600;
-          minutes = Math.floor(t / 60) % 60;
           t -= minutes * 60;
-          seconds = t % 60;
 
           if(minutes <= 5){
             this.noMoreTime = true;
           }
-
-          if(isNaN(minutes)){
-            minutes = '--';
+          if(minutes <= 9){
+            string+="0"
           }
-          if(isNaN(seconds)){
-            seconds = '--';
+          string+=minutes + ':'
+          if(seconds <= 9){
+            string+="0"
           }
+          string+=  seconds
 
-          return [
-              //days + 'd',
-              //hours + 'h',
-              minutes ,
-              seconds
-          ].join(':');
+          return string;
       }
 
       restart(minutes){
+        this.kill()
         let now = moment();
         this.future =  now.add(minutes, 'minutes').toDate();
         this.start()
       }
 
-      default(){
+      kill(){
+        if(  this.subscription){
+          this.subscription.unsubscribe();
+        }
         this.stop();
-        this.subscription.unsubscribe();
         this.message = '--:--'
       }
 

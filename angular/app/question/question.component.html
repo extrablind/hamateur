@@ -38,6 +38,7 @@
     <br/>
 
 
+
   </div>
   <div class="col-lg-5">
     <div class=" card ">
@@ -45,7 +46,7 @@
         Liste des questions
 
         <div class="float-right float-sm-right">
-          <button class="btn btn-warning btn-sm" (click)="changeStep('legal') ">
+          <button *ngIf="step==='technical'" class="btn btn-warning btn-sm" (click)="changeStep('legal') ">
            Partie légale
           </button>
 

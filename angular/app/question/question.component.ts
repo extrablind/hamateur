@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+
+
 import { DataService } from '../services/data.service';
 
 @Component({
@@ -13,6 +15,7 @@ export default class QuestionComponent {
     public next:boolean= true
     public previous:boolean= true
     public selected=0
+
     public countAnsweredQuestions={
       'legal' : 0 ,
       'technical' : 0
@@ -25,9 +28,10 @@ export default class QuestionComponent {
     private originalQuestionsData;
 
     @Output() onExamIsEnded     = new EventEmitter();
+    @Output() onExamIsStarted     = new EventEmitter();
     @Output() onChangeStep  = new EventEmitter();
 
-    constructor(datas:DataService) {
+    constructor( datas:DataService) {
       this.datas = datas
     }
 
@@ -47,6 +51,7 @@ export default class QuestionComponent {
         }
         this.refreshNavigationStatus()
         this.isLoading = false;
+        this.onExamIsStarted.emit(this.step);
     }
 
     async correct(){
@@ -70,6 +75,9 @@ export default class QuestionComponent {
     }
 
     changeStep(toStep){
+      if(!confirm("Passer à l'épreuve technique tout de suite ?\nVous ne pourrez pas revenir en arrière.")){
+        return
+      }
       this.answered[this.step] = this.questions;
       this.onChangeStep.emit(toStep);
 
@@ -144,3 +152,4 @@ export default class QuestionComponent {
     }
 
 }
+

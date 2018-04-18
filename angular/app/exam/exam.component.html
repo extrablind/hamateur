@@ -40,5 +40,5 @@
 </div>
 
 <!-- TODO : Component Exam list for this candidate, here -->
-<app-question *ngIf="status === 'started'" (onChangeStep)="changeStep($event)" (onExamIsEnded)="save($event)">
+<app-question *ngIf="status === 'started'" (onChangeStep)="changeStep($event)" (onExamIsStarted)="start($event)" (onExamIsEnded)="save($event)">
 </app-question>

@@ -3,6 +3,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import {HttpClientModule, HttpClient} from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
+import { MatDialogModule } from '@angular/material';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 // components
 import { AppComponent } from './app.component';
 import  ExamComponent  from './exam/exam.component';
@@ -32,7 +34,7 @@ const appRoutes: Routes = [
     QuestionComponent,
     CandidateComponent,
     CountdownComponent,
-    RegisteredComponent
+    RegisteredComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,7 +42,7 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
   ],
   providers: [
       DataService
