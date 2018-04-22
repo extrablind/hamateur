@@ -14,8 +14,8 @@ import * as moment from 'moment';
 })
 export default class CountdownComponent {
 
-  private future;
-  private diff: number;
+    private future;
+    private diff: number;
     private $counter: Observable<number>;
     private subscription: Subscription;
     private message: string;

@@ -11,7 +11,7 @@
           -
           <span *ngIf="step==='legal' ">Partie légale</span>
           <span *ngIf="step==='technical' ">Partie technique</span>
-
+          {{timer}}
         </small>
         <div class="float-right float-sm-right">
 
@@ -50,7 +50,7 @@
            Partie légale
           </button>
 
-          <button *ngIf="step!=='technical' " class="btn btn-warning btn-sm" (click)="changeStep('technical') ">
+          <button *ngIf="step!=='technical' " class="btn btn-warning btn-sm" (click)="timer.restart(20) ">
             Passer à la partie technique
           </button>
           <button *ngIf="step==='technical' " class="btn btn-danger btn-sm" (click)="end() ">

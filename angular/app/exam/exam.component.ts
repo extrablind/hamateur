@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
 import Candidate from '../candidate/candidate.component';
-import Countdown from '../countdown/countdown.component';
 import { DataService } from '../services/data.service';
+import { TimerService } from '../services/timer.service';
+import { Observable, Subscription, BehaviorSubject } from 'rxjs/Rx';
 
 @Component({
   selector: 'app-exam',
@@ -10,41 +11,48 @@ import { DataService } from '../services/data.service';
 })
 
 export default class ExamComponent   {
+  public status:string = "pending";
+  private timer
+  private restarted
+  restartSub
+
   @Input() candidate:Candidate;
-  @Input() countdown:Countdown;
   @Output() onExamIsStarted = new EventEmitter();
   @Output() onExamIsEnded = new EventEmitter();
   @Output() onChangeStep = new EventEmitter();
   @Output() onExamStatusChanged = new EventEmitter();
 
-  // All mode for current exam
-  public time:any = new Date();
-  public status:string = "pending";
-  // real or free
-  public mode:string = 'real';
-  private api;
-  public timer;
+  constructor(private api:DataService , private timerSrv:TimerService) {
+    this.restartSub = this.timerSrv.getRestartEvent().subscribe(message => {
+      //this.message = message;
+      console.log(message)
+    });
+      this.countdownSub = this.timerSrv.timer$.subscribe(timer => {
+      this.timer = timer
+    });
 
-  async ngOnInit(){
-    /*
-    var status = localStorage.getItem("examStatus");
-    if(status){
-      this.status = status
-    }
-    */
+  }
+  restart(minutes){
+    this.timerSrv.restart(minutes);
+  }
+  ngOnDestroy()          {
+    this.restartSub.unsubscribe();
+    this.countdownSub.unsubscribe()
   }
 
-    constructor( private data:DataService) {
-      this.api = data;
-    }
+  ngOnChanges(){
+
+  }
+
+   ngOnInit(){
+     console.log(this.timerSrv);
+  }
 
     changeStep(step){
-      console.log("Changing Step from exam : " + step)
       this.onChangeStep.emit(step);
     }
 
   async save(parts){
-    console.log("Exam ended, save answers")
     this.end()
     var exam    = await this.api.saveExam({parts: parts, candidate : this.candidate});
   }
@@ -58,6 +66,7 @@ export default class ExamComponent   {
   end(){
     this.setStatus('ended')
     this.onExamIsEnded.emit();
+
   }
 
   start(){

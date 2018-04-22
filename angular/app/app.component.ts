@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { DataService } from './services/data.service';
 import * as moment from 'moment';
-import  CountdownComponent  from './countdown/countdown.component';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +29,6 @@ export class AppComponent {
        return;
      }
    }
-
 
    refreshCandidate(candidate){
      this.candidate = candidate;

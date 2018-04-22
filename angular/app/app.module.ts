@@ -5,15 +5,16 @@ import {HttpClientModule, HttpClient} from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { MatDialogModule } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+// services
+import { DataService } from './services/data.service';
+import { TimerService } from './services/timer.service';
 // components
 import { AppComponent } from './app.component';
 import  ExamComponent  from './exam/exam.component';
 import  CandidateComponent  from './candidate/candidate.component';
 import  QuestionComponent  from './question/question.component';
-import  CountdownComponent  from './countdown/countdown.component';
 import  RegisteredComponent  from './registered/registered.component';
-// services
-import { DataService } from './services/data.service';
+
 
 // Routes
 const appRoutes: Routes = [
@@ -33,7 +34,6 @@ const appRoutes: Routes = [
     ExamComponent,
     QuestionComponent,
     CandidateComponent,
-    CountdownComponent,
     RegisteredComponent,
   ],
   imports: [
@@ -45,7 +45,8 @@ const appRoutes: Routes = [
     RouterModule,
   ],
   providers: [
-      DataService
+      DataService,
+      TimerService
   ],
   bootstrap: [AppComponent]
 })

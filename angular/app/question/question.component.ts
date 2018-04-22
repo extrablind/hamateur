@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-
+import { TimerService } from '../services/timer.service';
 import { DataService } from '../services/data.service';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'app-question',
@@ -14,31 +15,33 @@ export default class QuestionComponent {
     public questions
     public next:boolean= true
     public previous:boolean= true
+    public step:string='legal'
+    public score=0
+    public passing=false
+    public isLoading = false
+    public answered={}
+    public originalQuestionsData
     public selected=0
-
     public countAnsweredQuestions={
       'legal' : 0 ,
       'technical' : 0
     }
-    public step:string='legal'
-    public score=0
-    public passing=false
-    public isLoading = false;
-    public answered={}
-    private originalQuestionsData;
+    private timer
 
-    @Output() onExamIsEnded     = new EventEmitter();
-    @Output() onExamIsStarted     = new EventEmitter();
-    @Output() onChangeStep  = new EventEmitter();
+    @Output() onExamIsEnded     = new EventEmitter()
+    @Output() onExamIsStarted   = new EventEmitter()
+    @Output() onChangeStep      = new EventEmitter()
 
-    constructor( datas:DataService) {
+    constructor(datas:DataService, private timerService:TimerService) {
       this.datas = datas
     }
 
     public endExamEmitter(){
       console.log("Exam is ended. Starting emitter ")
     }
-
+    ngAfterViewInit(){
+    //  this.timerService.restartClickStream.subscribe(e => this.timer = e.target)
+    }
     async ngOnInit(){
         this.isLoading = true
         var questions;
