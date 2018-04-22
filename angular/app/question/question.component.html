@@ -13,8 +13,8 @@
           <span *ngIf="step==='technical' ">Partie technique</span>
           {{timer}}
         </small>
-        <div class="float-right float-sm-right">
 
+        <div class="float-right float-sm-right">
           <div class="btn-group  btn-group-sm text-right" role="group" aria-label="Basic example">
             <button type="button " (click)="previousQuestion($event) " [ngClass]="{ 'disabled':!previous } " class="btn  btn-primary "><i class="fa fa-arrow-left "></i> Précédent</button>
             <button type="button " (click)="nextQuestion($event) " [ngClass]="{ 'disabled':!next } " class="btn  btn-primary  ">Suivant <i class="fa fa-arrow-right "></i></button>
@@ -50,10 +50,10 @@
            Partie légale
           </button>
 
-          <button *ngIf="step!=='technical' " class="btn btn-warning btn-sm" (click)="timer.restart(20) ">
+          <button *ngIf="step!=='technical' " class="btn btn-warning btn-sm" (click)="changeStep('technical')" (click)="restart(20)">
             Passer à la partie technique
           </button>
-          <button *ngIf="step==='technical' " class="btn btn-danger btn-sm" (click)="end() ">
+          <button *ngIf="step==='technical' " class="btn btn-danger btn-sm" (click)="end()">
             Finir l'examen
           </button>
 

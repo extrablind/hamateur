@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { DataService } from './services/data.service';
+import { TimerService } from './services/timer.service';
 import * as moment from 'moment';
 
 @Component({
@@ -15,20 +16,28 @@ export class AppComponent {
   public exam;
   public counter;
   public api;
+  public timer;
   public counterIsUpdated;
 
-  constructor( private data:DataService) {
-    this.api = data;
-  }
+    constructor( private data:DataService, , private timerSrv:TimerService) {
+      this.api = data;
+      this.countdownSub = this.timerSrv.timer$.subscribe(timer => {
+        this.timer = timer
+      });
+    }
 
-   async ngOnInit(){
-     var uuid = localStorage.getItem("candidate");
-     if(uuid){
-       this.candidate = await this.api.getCandidate(uuid);
-       this.candidate.isRegistered = (null !== this.candidate);
-       return;
+    ngOnDestroy(){
+      this.countdownSub.unsubscribe();
+    }
+
+     async ngOnInit(){
+       var uuid = localStorage.getItem("candidate");
+       if(uuid){
+         this.candidate = await this.api.getCandidate(uuid);
+         this.candidate.isRegistered = (null !== this.candidate);
+         return;
+       }
      }
-   }
 
    refreshCandidate(candidate){
      this.candidate = candidate;

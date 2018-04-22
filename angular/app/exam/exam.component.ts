@@ -23,15 +23,10 @@ export default class ExamComponent   {
   @Output() onExamStatusChanged = new EventEmitter();
 
   constructor(private api:DataService , private timerSrv:TimerService) {
-    this.restartSub = this.timerSrv.getRestartEvent().subscribe(message => {
-      //this.message = message;
-      console.log(message)
-    });
-      this.countdownSub = this.timerSrv.timer$.subscribe(timer => {
-      this.timer = timer
-    });
-
+    this.restartSub = this.timerSrv.getRestartEvent().subscribe(message => { console.log(message) });
+    this.countdownSub = this.timerSrv.timer$.subscribe(timer => { this.timer = timer });
   }
+  
   restart(minutes){
     this.timerSrv.restart(minutes);
   }

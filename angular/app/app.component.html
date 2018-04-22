@@ -12,6 +12,7 @@
         <a routerLink="/exam" class="nav-link" href="#">Examen</a>
       </li>
       <li class="nav-item">
+        <button class="disabled btn btn-success btn-lg">{{timer}}</button>
       </li>
     </ul>
     <app-registered (onCandidateLogout)=" logout($event) " [candidate]="candidate "></app-registered>

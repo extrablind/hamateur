@@ -32,8 +32,13 @@ export default class QuestionComponent {
     @Output() onExamIsStarted   = new EventEmitter()
     @Output() onChangeStep      = new EventEmitter()
 
-    constructor(datas:DataService, private timerService:TimerService) {
+    constructor(datas:DataService , private timerSrv:TimerService) {
       this.datas = datas
+      this.restartSub = this.timerSrv.getRestartEvent().subscribe(message => { console.log(message) });
+    }
+
+    restart(minutes){
+      this.timerSrv.restart(minutes);
     }
 
     public endExamEmitter(){
@@ -54,6 +59,7 @@ export default class QuestionComponent {
         }
         this.refreshNavigationStatus()
         this.isLoading = false;
+        this.restart(20);
         this.onExamIsStarted.emit(this.step);
     }
 
@@ -72,9 +78,9 @@ export default class QuestionComponent {
     }
 
     end(){
+      this.timerSrv.kill();
       this.onExamIsEnded.emit(this.answered);
       localStorage.setItem('examStatus', 'ended');
-      return;
     }
 
     changeStep(toStep){
