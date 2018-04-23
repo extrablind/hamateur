@@ -28,6 +28,8 @@ Route.group('api', function() {
     Route.post('/exam/correct', 'ExamController.correction');
     Route.post('/exam/save', 'ExamController.save');
 
-    Route.get('/questions/get', 'QuestionController.get').as('get-candidate');
+    Route.get('/questions/get', 'QuestionController.get').as('get-questions');
+    Route.get('/question/get', 'QuestionController.getSingle').as('get-question');
+    Route.post('/question/correct', 'QuestionController.correct').as('correct-question');
 
 }).prefix('/api/v1')

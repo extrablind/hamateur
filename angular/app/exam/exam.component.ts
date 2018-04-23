@@ -14,7 +14,9 @@ export default class ExamComponent   {
   public status:string = "pending";
   private timer
   private restarted
-  restartSub
+  public restartSub
+  public countdownSub
+  public mode
 
   @Input() candidate:Candidate;
   @Output() onExamIsStarted = new EventEmitter();
@@ -26,21 +28,13 @@ export default class ExamComponent   {
     this.restartSub = this.timerSrv.getRestartEvent().subscribe(message => { console.log(message) });
     this.countdownSub = this.timerSrv.timer$.subscribe(timer => { this.timer = timer });
   }
-  
+
   restart(minutes){
     this.timerSrv.restart(minutes);
   }
   ngOnDestroy()          {
     this.restartSub.unsubscribe();
     this.countdownSub.unsubscribe()
-  }
-
-  ngOnChanges(){
-
-  }
-
-   ngOnInit(){
-     console.log(this.timerSrv);
   }
 
     changeStep(step){
@@ -54,19 +48,19 @@ export default class ExamComponent   {
 
   setStatus(status){
     this.status = status
-    localStorage.setItem('examStatus', this.status);
+    localStorage.setItem('exam.status', this.status);
     console.log("Exam changed status to : " + this.status)
   }
 
   end(){
     this.setStatus('ended')
     this.onExamIsEnded.emit();
-
   }
 
-  start(){
+  start(mode){
+    this.mode = mode
     this.setStatus('started')
-    this.onExamIsStarted.emit();
+    // this.onExamIsStarted.emit();
   }
 
 }

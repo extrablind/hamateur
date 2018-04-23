@@ -6,15 +6,14 @@
       </div>
       <div class="card-body ">
         <button class="btn btn-primary btn-block" (click)="start('real')" type="button">Examen en conditions réelles</button>
-        <button class="btn btn-primary btn-block disabled" type="button">Entrainement</button>
+        <button class="btn btn-primary btn-block" (click)="start('simple')" type="button">Entrainement</button>
       </div>
     </div>
   </div>
   <div class="col-lg-9">
     <div class="card">
       <div class="card-header">
-        <button (click)="restart(20)">Restart</button>
-        <h3>Bienvenue {{timer}} </h3>
+        <h3>Bienvenue</h3>
         <small>
         </small>
         <div class="float-right float-sm-right">
@@ -40,5 +39,6 @@
   </div>
 </div>
 <!-- TODO : Component Exam list for this candidate, here -->
-<app-question *ngIf="status === 'started'" (onChangeStep)="changeStep($event)" (onExamIsStarted)="start($event)" (onExamIsEnded)="save($event)">
+<app-question *ngIf="mode === 'real'" (onChangeStep)="changeStep($event)" (onExamIsEnded)="save($event)">
 </app-question>
+<app-question-free *ngIf="mode === 'simple'"></app-question-free>

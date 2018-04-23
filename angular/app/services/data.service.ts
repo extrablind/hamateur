@@ -18,6 +18,12 @@ export class DataService {
                         .then(r => {return r });
     }
 
+    correctQuestion(question){
+      return this.http.post(this.url + "/question/correct", question)
+                        .toPromise()
+                        .then(r => {return r });
+    }
+
     saveExam(datas){
       return this.http.post(this.url + "/exam/save", datas)
                         .toPromise()
@@ -46,6 +52,18 @@ export class DataService {
        .then(result => { return result });
     }
 
+    getQuestion(){
+     return this.http.get(this.url + "/question/get")
+       .toPromise()
+       .then((question) => {
+         question['answered'] = false;
+         for (var i in question['choices']) {
+           question['choices'][i]['selected'] = false;
+         }
+         return question
+       });
+    }
+
     getQuestions(){
       let headers = new HttpHeaders();
             let params = new HttpParams();
@@ -61,7 +79,6 @@ export class DataService {
              });
            });
          });
-         console.log(parts)
          return parts });
     }
 

@@ -1,0 +1,14 @@
+.other-infos ul li {
+  list-style:none;
+}
+.list-group.list-group-sm .list-group-item {
+    padding: 0.25rem 1rem;
+    cursor:pointer
+}
+
+.list-group.list-group-sm .list-group-item.active{
+
+}
+#questionLoader{
+  margin:10px auto;
+}

@@ -18,8 +18,8 @@ export class AppComponent {
   public api;
   public timer;
   public counterIsUpdated;
-
-    constructor( private data:DataService, , private timerSrv:TimerService) {
+  public countdownSub;
+    constructor( private data:DataService, private timerSrv:TimerService) {
       this.api = data;
       this.countdownSub = this.timerSrv.timer$.subscribe(timer => {
         this.timer = timer

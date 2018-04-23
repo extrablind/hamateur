@@ -1,8 +1,7 @@
 import { Injectable, AfterViewInit } from '@angular/core';
 import { HttpClient,HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, Subscription, BehaviorSubject } from 'rxjs/Rx';
+import { Observable, Subscription, BehaviorSubject, Subject } from 'rxjs/Rx';
 import * as moment from 'moment';
-import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class TimerService   {
@@ -44,15 +43,10 @@ export class TimerService   {
   }
 
     start() {
-      console.log("Countdown started");
         this.started = true;
     }
     stop()  {
-      console.log("Countdown stopped");
         this.started = false;
-    }
-    reset()  {
-      console.log("reset");
     }
 
           dhms(t) {

@@ -8,31 +8,22 @@ const Question = use('App/Models/Question');
 const Exam = use('App/Models/Exam');
 const _ = require('lodash');
 const Logger = use('Logger')
+const QuestionService = require ('../../services/QuestionService.js')
 
 class ExamController {
 
-  async stop ({session, request, response, view }) {
-	var alreadyGiven = session.get('alreadyGiven', []);
-	let questions = await Database.from('questions')
-		.whereNotIn('id', alreadyGiven).limit(20)
-     	return view.render('start');
+   home ({session, request, response, view }) {
+     return response.send({api:true});
   }
 
-   async isGoodAnswer(question, choice){
-      var dbQuestion      = await Question.query().with('choices').where({id: question.id}).fetch();
-      dbQuestion          = dbQuestion.toJSON()[0];
-      var goodChoice      =  _.filter(dbQuestion.choices, ['isGoodAnswer', 1])[0];
-      var selectedChoice  =  this.getSelectedChoice(question) ;
-      return (goodChoice.id === selectedChoice.id);
-    }
+  async stop ({session, request, response, view }) {
+  	var alreadyGiven = session.get('alreadyGiven', []);
+  	let questions = await Database.from('questions')
+  		.whereNotIn('id', alreadyGiven).limit(20)
+       	return view.render('start');
+  }
 
-    async getSelectedChoice(question){
-      var index = await _.findIndex(question.choices, ['selected', true]);
-      if(index === -1){
-        return null
-      }
-      return question.choices[index];
-    }
+
 
     async save({session, request, response, view }){
       var c = this;
@@ -41,8 +32,8 @@ class ExamController {
       for (var partName in parts) {
         for (var index in parts[partName]) {
           let question =  parts[partName][index]
-          var choice            = this.getSelectedChoice(question);
-          var isGoodAnswer      = await this.isGoodAnswer(question, choice);
+          var choice            = this.QuestionService.getSelectedChoice(question);
+          var isGoodAnswer      = await this.QuestionService.isGoodAnswer(question, choice);
           //score+= await this.getScoreForQuestion(question);
           var answer            = {};
           answer.question_id    = question.id
@@ -57,10 +48,10 @@ class ExamController {
       }
       await Answer.createMany(answers)
 
-      let score = await this.getScore(parts);
+      let score = await this.QuestionService.getScore(parts);
       let saveExam = {
         score           : score,
-        isPassing       : this.isPassing(score),
+        isPassing       : this.QuestionService.isPassing(score),
         isFinished      : true,
         isAutoFinished  : false,
         finishedAt      : new Date(),
@@ -78,37 +69,6 @@ class ExamController {
 
         }
     }
-
-    isPassing(score){
-      return score>= 12
-    }
-
-  async getScore(parts){
-      let c = this
-      var score = 0;
-      for (var partName in parts) {
-        for (var index in parts[partName]) {
-          let question =  parts[partName][index]
-          var choice            = this.getSelectedChoice(question);
-          var isGoodAnswer      = await this.isGoodAnswer(question, choice);
-          score+= await this.getScoreForQuestion(question);
-        }
-      }
-     return score;
-    }
-
-  async   getScoreForQuestion(question){
-      var choice            = this.getSelectedChoice(question);
-      var isGoodAnswer      = await this.isGoodAnswer(question, choice);
-      if(!question.answered){
-        return 0;
-      }
-      if(isGoodAnswer){
-          return 2
-      }
-      return -3
-    }
-
 
   async correction({session, request, response, view }){
     const questions = request.post();

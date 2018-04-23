@@ -13,8 +13,8 @@ import { AppComponent } from './app.component';
 import  ExamComponent  from './exam/exam.component';
 import  CandidateComponent  from './candidate/candidate.component';
 import  QuestionComponent  from './question/question.component';
+import  QuestionFreeComponent  from './question-free/question-free.component';
 import  RegisteredComponent  from './registered/registered.component';
-
 
 // Routes
 const appRoutes: Routes = [
@@ -33,6 +33,7 @@ const appRoutes: Routes = [
     AppComponent,
     ExamComponent,
     QuestionComponent,
+    QuestionFreeComponent,
     CandidateComponent,
     RegisteredComponent,
   ],

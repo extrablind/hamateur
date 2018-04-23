@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-
+import { Subject } from 'rxjs/Subject';
 import { TimerService } from '../services/timer.service';
 import { DataService } from '../services/data.service';
-import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'app-question',
@@ -11,22 +10,24 @@ import { Subject } from 'rxjs/Subject';
 })
 export default class QuestionComponent {
 
-    public datas
-    public questions
-    public next:boolean= true
-    public previous:boolean= true
-    public step:string='legal'
-    public score=0
-    public passing=false
-    public isLoading = false
-    public answered={}
-    public originalQuestionsData
-    public selected=0
+    public questions          = []
+    public next:boolean       = true
+    public previous:boolean   = true
+    public step:string        = 'legal'
+    public score              = 0
+    public passing            = false
+    public isLoading          = false
+    public answered           = {}
+    public selected           = 0
     public countAnsweredQuestions={
-      'legal' : 0 ,
+      'legal'     : 0,
       'technical' : 0
     }
-    private timer
+
+    public originalQuestionsData
+    public datas
+    public timer
+    public restartSub
 
     @Output() onExamIsEnded     = new EventEmitter()
     @Output() onExamIsStarted   = new EventEmitter()
@@ -38,37 +39,28 @@ export default class QuestionComponent {
     }
 
     restart(minutes){
-      this.timerSrv.restart(minutes);
+        this.timerSrv.restart(minutes);
     }
 
     public endExamEmitter(){
       console.log("Exam is ended. Starting emitter ")
     }
-    ngAfterViewInit(){
-    //  this.timerService.restartClickStream.subscribe(e => this.timer = e.target)
-    }
+
     async ngOnInit(){
         this.isLoading = true
-        var questions;
-        if(typeof this.answered[this.step] !== 'undefined'){
-          questions = this.answered[this.step];
-        }else{
-          var questions = await this.datas.getQuestions();
-          this.questions = questions[this.step]
+        ;
+      //  if(typeof this.answered[this.step] !== 'undefined'){
+          // this.questions = this.answered[this.step];
+        //}else{
+         var questions  =  await this.datas.getQuestions()
+          this.questions = questions[this.step];
           this.originalQuestionsData = questions
-        }
+        //}
         this.refreshNavigationStatus()
-        this.isLoading = false;
         this.restart(20);
         this.onExamIsStarted.emit(this.step);
-    }
+        this.isLoading = false;
 
-    async correct(){
-      this.isLoading = true;
-      var data =   await this.datas.correct(this.questions);
-      this.score = data.score
-      this.passing = data.passing
-      this.isLoading = false;
     }
 
     reInitCurrentChoice(){
@@ -80,7 +72,7 @@ export default class QuestionComponent {
     end(){
       this.timerSrv.kill();
       this.onExamIsEnded.emit(this.answered);
-      localStorage.setItem('examStatus', 'ended');
+      localStorage.setItem('exam.status', 'ended');
     }
 
     changeStep(toStep){
