@@ -10,147 +10,165 @@ import { DataService } from '../services/data.service';
 })
 export default class QuestionComponent {
 
-    public questions          = []
-    public next:boolean       = true
-    public previous:boolean   = true
-    public step:string        = 'legal'
-    public score              = 0
-    public passing            = false
-    public isLoading          = false
-    public answered           = {}
-    public selected           = 0
-    public countAnsweredQuestions={
-      'legal'     : 0,
-      'technical' : 0
-    }
+  public questions = []
+  public next: boolean = true
+  public previous: boolean = true
+  public step: string = 'legal'
+  public score = 0
+  public passing = false
+  public isLoading = false
+  public answered = {}
+  public selected = 0
+  public countAnsweredQuestions = {
+    'legal': 0,
+    'technical': 0
+  }
 
-    public originalQuestionsData
-    public datas
-    public timer
-    public restartSub
+  public originalQuestionsData
+  public datas
+  public timer
+  public restartSub
+  public timeoutSub
+  @Output() onExamIsEnded = new EventEmitter()
+  @Output() onExamIsStarted = new EventEmitter()
+  @Output() onChangeStep = new EventEmitter()
 
-    @Output() onExamIsEnded     = new EventEmitter()
-    @Output() onExamIsStarted   = new EventEmitter()
-    @Output() onChangeStep      = new EventEmitter()
-
-    constructor(datas:DataService , private timerSrv:TimerService) {
-      this.datas = datas
-      this.restartSub = this.timerSrv.getRestartEvent().subscribe(message => { console.log(message) });
-    }
-
-    restart(minutes){
-        this.timerSrv.restart(minutes);
-    }
-
-    public endExamEmitter(){
-      console.log("Exam is ended. Starting emitter ")
-    }
-
-    async ngOnInit(){
-        this.isLoading = true
-        ;
-      //  if(typeof this.answered[this.step] !== 'undefined'){
-          // this.questions = this.answered[this.step];
-        //}else{
-         var questions  =  await this.datas.getQuestions()
-          this.questions = questions[this.step];
-          this.originalQuestionsData = questions
-        //}
-        this.refreshNavigationStatus()
+  constructor(datas: DataService, private timerSrv: TimerService) {
+    this.datas = datas
+    this.restartSub = this.timerSrv.getRestartEvent().subscribe(message => { console.log(message) });
+    this.timeoutSub = this.timerSrv.getTimeOutEvent().subscribe(date => {
+      console.log(date);
+      if (this.step === 'legal') {
         this.restart(20);
-        this.onExamIsStarted.emit(this.step);
-        this.isLoading = false;
+        this.changeStep('technical', false);
+        return;
+      }
+      console.log("Timeout")
+      this.end();
+    });
 
-    }
+  }
 
-    reInitCurrentChoice(){
-      this.questions[this.selected].choices.map(function(obj){
-          obj.selected = false;
-      })
-    }
+  ngOnDestroy() {
+    this.restartSub.unsubscribe();
+    this.timeoutSub.unsubscribe();
+  }
 
-    end(){
-      this.timerSrv.kill();
-      this.onExamIsEnded.emit(this.answered);
-      localStorage.setItem('exam.status', 'ended');
-    }
+  restart(minutes) {
+    this.timerSrv.restart(minutes);
+  }
 
-    changeStep(toStep){
-      if(!confirm("Passer à l'épreuve technique tout de suite ?\nVous ne pourrez pas revenir en arrière.")){
+  public endExamEmitter() {
+    console.log("Exam is ended. Starting emitter ")
+  }
+
+  async ngOnInit() {
+    this.isLoading = true
+      ;
+    //  if(typeof this.answered[this.step] !== 'undefined'){
+    // this.questions = this.answered[this.step];
+    //}else{
+    var questions = await this.datas.getQuestions()
+    this.questions = questions[this.step];
+    this.originalQuestionsData = questions
+    //}
+    this.refreshNavigationStatus()
+    this.restart(20);
+    this.onExamIsStarted.emit(this.step);
+    this.isLoading = false;
+
+  }
+
+  reInitCurrentChoice() {
+    this.questions[this.selected].choices.map(function(obj) {
+      obj.selected = false;
+    })
+  }
+
+  end() {
+    this.timerSrv.kill();
+    this.onExamIsEnded.emit(this.answered);
+    localStorage.setItem('exam.status', 'ended');
+  }
+
+  changeStep(toStep, doConfirm) {
+    if (doConfirm) {
+      if (!confirm("Passer à l'épreuve technique tout de suite ?\nVous ne pourrez pas revenir en arrière.")) {
         return
       }
-      this.answered[this.step] = this.questions;
-      this.onChangeStep.emit(toStep);
+    }
+    this.answered[this.step] = this.questions;
+    this.onChangeStep.emit(toStep);
 
-      // Already done, reload old
-      if(typeof this.answered[toStep] !== 'undefined'){
-        this.questions = this.answered[toStep];
-      }else{
-        this.questions = this.originalQuestionsData[toStep];
+    // Already done, reload old
+    if (typeof this.answered[toStep] !== 'undefined') {
+      this.questions = this.answered[toStep];
+    } else {
+      this.questions = this.originalQuestionsData[toStep];
+    }
+    this.previous = false
+    this.next = true
+    this.step = toStep
+    this.selected = 0
+    this.score = 0
+
+  }
+  isAnswered(question) {
+    for (let i = 0; i < question.choices.length; i++) {
+      if (question.choices[i].selected) {
+        return true;
       }
-      this.previous = false
-      this.next = true
-      this.step = toStep
-      this.selected = 0
-      this.score = 0
-
     }
-      isAnswered(question){
-        for (let i = 0; i < question.choices.length ; i++) {
-          if(question.choices[i].selected){
-            return true;
-          }
-        }
-        return false;
-      }
+    return false;
+  }
 
-     answer(event, index){
-       var previousChoice = this.questions[this.selected].choices[index].selected ;
-       var wasAnswered = this.isAnswered(this.questions[this.selected]);
-       this.reInitCurrentChoice();
-       this.questions[this.selected].choices[index].selected = !previousChoice;
-       if(!previousChoice && !wasAnswered){
-         this.questions[this.selected].answered = true
-         this.countAnsweredQuestions[this.step]++
-       }else if(wasAnswered && !this.questions[this.selected].choices[index].selected){
-          this.countAnsweredQuestions[this.step]--
-          this.questions[this.selected].answered = false
-        }
-
+  answer(event, index) {
+    var previousChoice = this.questions[this.selected].choices[index].selected;
+    var wasAnswered = this.isAnswered(this.questions[this.selected]);
+    this.reInitCurrentChoice();
+    this.questions[this.selected].choices[index].selected = !previousChoice;
+    if (!previousChoice && !wasAnswered) {
+      this.questions[this.selected].answered = true
+      this.countAnsweredQuestions[this.step]++
+    } else if (wasAnswered && !this.questions[this.selected].choices[index].selected) {
+      this.countAnsweredQuestions[this.step]--
+      this.questions[this.selected].answered = false
     }
 
-   refreshNavigationStatus(){
-     this.next = true;
-     this.previous = true;
+  }
 
-     if(this.questions.length -1 === this.selected){
-       this.next = false;
-     }else if(this.selected === 0){
-       this.previous = false;
-     }
-   }
+  refreshNavigationStatus() {
+    this.next = true;
+    this.previous = true;
 
-   nextQuestion(event) {
-      if(this.selected < this.questions.length-1){
-          this.selected++;
-      }
-      this.refreshNavigationStatus()
-   }
-
-
-   previousQuestion(event) {
-       if(this.selected > 0){
-         this.selected--;
-       }
-       this.refreshNavigationStatus()
+    if (this.questions.length - 1 === this.selected) {
+      this.next = false;
+    } else if (this.selected === 0) {
+      this.previous = false;
     }
+  }
 
-    changeQuestion(event, index){
-        if(index <= this.questions.length && index >= 0){
-          this.selected = index;
-        }
-        this.refreshNavigationStatus()
+  nextQuestion(event) {
+    if (this.selected < this.questions.length - 1) {
+      this.selected++;
     }
+    this.refreshNavigationStatus()
+  }
+
+
+  previousQuestion(event) {
+    if (this.selected > 0) {
+      this.selected--;
+    }
+    this.refreshNavigationStatus()
+  }
+
+  changeQuestion(event, index) {
+    if (index <= this.questions.length && index >= 0) {
+      this.selected = index;
+    }
+    this.refreshNavigationStatus()
+  }
 
 }
 

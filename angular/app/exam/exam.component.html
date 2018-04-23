@@ -39,6 +39,6 @@
   </div>
 </div>
 <!-- TODO : Component Exam list for this candidate, here -->
-<app-question *ngIf="mode === 'real'" (onChangeStep)="changeStep($event)" (onExamIsEnded)="save($event)">
+<app-question *ngIf="mode === 'real' && status === 'started'" (onChangeStep)="changeStep($event)" (onExamIsEnded)="save($event)">
 </app-question>
-<app-question-free *ngIf="mode === 'simple'"></app-question-free>
+<app-question-free *ngIf="mode === 'simple' && status === 'started'" (onExamIsEnded)="setStatus('ended')"></app-question-free>

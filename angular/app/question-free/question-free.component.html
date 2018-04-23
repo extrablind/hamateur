@@ -6,13 +6,13 @@
         <i *ngIf="isLoading" class="fa fa-spin fa-spinner"></i>
         <div class="float-right">
           <div class="btn-group  btn-group text-right" role="group" aria-label="Basic example">
-            <button type="button " [ngClass]="{ 'disabled':isCorrected } " class="btn btn-success " (click)="correct() ">
+            <button type="button " [ngClass]="{ 'disabled':isCorrection } " class="btn btn-success " (click)="correct() ">
                 Corriger
             </button>
           </div>
 
           <div class="btn-group  btn-group text-right" role="group" aria-label="Basic example">
-            <button type="button " (click)="nextQuestion($event) " [ngClass]="{ 'disabled':!isCorrected } " class="btn  btn-primary  ">Suivant <i class="fa fa-arrow-right "></i></button>
+            <button type="button " (click)="nextQuestion($event) " [ngClass]="{ 'disabled':!isCorrection } " class="btn  btn-primary  ">Suivant <i class="fa fa-arrow-right "></i></button>
           </div>
         </div>
       </div>
@@ -20,14 +20,31 @@
         <h4 class="card-text">{{question.content}}</h4>
         <section *ngIf="question.containSchema" class="questionchema">
           <img src="/public/assets/img-exam/{{question.image.toLowerCase()}}" alt="{{question.image.toLowerCase()}}" class="img-fluid " />
-        </section>t
+        </section>
         <hr/>
         <ul class="list-group" style="">
-          <li (click)="answer($event, i)" [ngClass]="{'active':question.choices[i].selected }" *ngFor="let choice of question.choices; let i = index" class="list-group-item">
+          <li (click)="answer($event, i)" [ngClass]="{'active':question.choices[i].selected && !isCorrection, 'success':isCorrection && correction.goodId === question.choices[i].id, 'error':isCorrection && correction.goodId !== question.choices[i].id && correction.answered && correction.answered.id === question.choices[i].id }"
+            *ngFor="let choice of question.choices; let i = index" class="list-group-item">
+            <!-- Good answer -->
+
+            <!-- My Choice
+            Si le choix est différent du good Id ou n'est pas
+
+            <i *ngIf="isCorrection" class="fa-2x  fa fa-camera"></i>
+            -->
+
             {{choice.content}}
             <button type="button " *ngIf="choice.isGoodAnswer" class="btn  btn-primary  ">GOOD </button>
+            <i *ngIf="isCorrection && correction.goodId === question.choices[i].id" class="fa-2x fa fa-check-circle pull-right"></i>
+            <i *ngIf="isCorrection && correction.goodId !== question.choices[i].id && correction.answered && correction.answered.id === question.choices[i].id" class="fa-2x  fa fa-times-circle pull-right"></i>
           </li>
         </ul>
+        <br/>
+        <div class="" *ngIf="isCorrection && correction.question.explanation">
+          <h3>Correction</h3>
+          <p>{{question.explanation}}</p>
+        </div>
+
       </div>
     </div>
     <br/>
@@ -52,14 +69,17 @@
           <tbody>
             <tr *ngIf="stats">
               <th width="60%">Total répondu</th>
-              <td> {{stats.nbAnswered}}/{{ stats.counter}}
-                <span class="badge pull-right">{{stats.percentageAnswered}}%</span></td>
+              <td> {{stats.nbAnswered}}/{{ stats.counter}}</td>
+              <td>
+                <span class="badge badge-primary pull-right">{{stats.percentageAnswered}}%</span></td>
             </tr>
             <tr *ngIf="stats">
-              <th width="60%"> Bonnes réponses</th>
+              <th width="60%">Bonnes réponses</th>
               <td>
                 {{stats.nbGoodAnswers}}/{{ stats.counter}}
-                <span class="badge pull-right">{{stats.percentageGoodAnswers}}%</span>
+              </td>
+              <td>
+                <span class="badge badge-primary pull-right">{{stats.percentageGoodAnswers}}%</span>
               </td>
             </tr>
 

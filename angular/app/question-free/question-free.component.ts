@@ -19,7 +19,7 @@ export default class QuestionFreeComponent {
     public countAnsweredQuestions=0
     private timer
     public restartSub
-    public isCorrected = false
+    public isCorrection = false
     public correction
     public stats = {
       counter               : 0,
@@ -27,35 +27,32 @@ export default class QuestionFreeComponent {
       nbGoodAnswers         : 0,
       nbAnswered            : 0,
       nbNotAnswered         : 0,
-      percentageGoodAnswers : 0 ,
+      percentageGoodAnswers : 0,
       percentageAnswered    : 0
 
     }
 
-
     @Output() onExamIsEnded     = new EventEmitter()
     @Output() onExamIsStarted   = new EventEmitter()
-    @Output() onChangeStep      = new EventEmitter()
 
     constructor(datas:DataService , private timerSrv:TimerService) {
       this.datas = datas
-    //  this.restartSub = this.timerSrv.getRestartEvent().subscribe(message => { console.log(message) });
     }
     async ngOnInit(){
         await this.loadNextQuestion()
     }
 
     end(){
-      console.log("end");
+      this.onExamIsEnded.emit(this.stats);
     }
 
   async nextQuestion(event) {
-    if(!this.isCorrected){
+    if(!this.isCorrection){
       return
     }
     this.stats.counter++
     await  this.loadNextQuestion()
-    this.isCorrected = false;
+    this.isCorrection = false;
     }
 
   async  loadNextQuestion(){
@@ -79,12 +76,15 @@ export default class QuestionFreeComponent {
     }
 
     async correct(){
-      if(this.isCorrected){
+      if(this.isCorrection){
         return;
       }
       this.isLoading = true;
-      this.correction = await this.datas.correctQuestion(this.question);
-      this.isCorrected = true;
+      let c = await this.datas.correctQuestion(this.question);
+      this.correction = c;
+      console.log(this.correction);
+
+      this.isCorrection = true;
       this.isLoading = false;
     }
 

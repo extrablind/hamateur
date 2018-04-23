@@ -13,15 +13,21 @@ class QuestionController {
     }
 
     async correct ({session, request, response, view }) {
-      const q = request.post();
+      const q = request.post()
       var question      = await this.QuestionRepository.getQuestion(q)
-      var isGoodAnswer  = await this.QuestionService.isGoodAnswer(q);
-      var answer        = await this.QuestionService.getSelectedChoice(q);
+      var isGoodAnswer  = await this.QuestionService.isGoodAnswer(q)
+      var answered        = await this.QuestionService.getSelectedChoice(q)
+      var goodAnswer    =  await this.QuestionService.getGoodAnswer(question)
+      let isAnswered    = q.answered
+      let goodId        = goodAnswer.id
+
       return response.send({
-        isGoodAnswer  : isGoodAnswer,
-        isAnswered    : q.answered,
-        question      : question,
-        answer        : answer
+        isGoodAnswer  ,
+        isAnswered    ,
+        question      ,
+        answered      ,
+        goodAnswer    ,
+        goodId
       });
     }
 
