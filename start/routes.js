@@ -14,22 +14,30 @@
 */
 
 const Route = use('Route')
+
+// Regular website
 Route.get('/', 'ExamController.home').as('home');
 
-// API Routes
-Route.post('/api/v1/register', 'ApiController.register')
-Route.post('/api/v1/login', 'ApiController.login')
+// Route.post('/candidate/create', 'CandidateController.create').as('create-candidate');
+// Route.get('/candidate/get', 'CandidateController.get').as('get-candidate');
 
+
+// API Routes public
+Route.group('api-public', function() {
+  Route.post('/login', 'UserController.login')
+  Route.post('/register', 'UserController.register')
+  //Route.get('/logout', 'UserController.logout')
+}).prefix('/api/v1');
+
+// API Routes authenticated
 Route.group('api', function() {
+    Route.get('/users/me', 'UserController.me')
 
-    Route.post('/candidate/create', 'CandidateController.create').as('create-candidate');
-    Route.get('/candidate/get', 'CandidateController.get').as('get-candidate');
+    Route.post('/exam/correct', 'ExamController.correction')
+    Route.post('/exam/save', 'ExamController.save')
 
-    Route.post('/exam/correct', 'ExamController.correction');
-    Route.post('/exam/save', 'ExamController.save');
+    Route.get('/questions/get', 'QuestionController.get')
+    Route.get('/question/get', 'QuestionController.getSingle')
+    Route.post('/question/correct', 'QuestionController.correct')
 
-    Route.get('/questions/get', 'QuestionController.get').as('get-questions');
-    Route.get('/question/get', 'QuestionController.getSingle').as('get-question');
-    Route.post('/question/correct', 'QuestionController.correct').as('correct-question');
-
-}).prefix('/api/v1')
+}).prefix('/api/v1').middleware('auth')

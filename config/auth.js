@@ -13,7 +13,7 @@ module.exports = {
   | Available Serializers - lucid, database
   |
   */
-  authenticator: 'session',
+  authenticator: 'jwt',
 
   /*
   |--------------------------------------------------------------------------
@@ -48,7 +48,7 @@ module.exports = {
   basic: {
     serializer: 'lucid',
     model: 'App/Models/User',
-    scheme: 'basic',
+      scheme: 'basic',
     uid: 'email',
     password: 'password'
   },
@@ -66,10 +66,11 @@ module.exports = {
     serializer: 'lucid',
     model: 'App/Models/User',
     scheme: 'jwt',
-    uid: 'api@meduse.space',
-    password: 'api',
+    uid: 'email',
+    password: 'password',
     options: {
-      secret: 'self::app.appKey'
+      secret: 'thi&4ohoo!ceet3lie3ohk$acaht1geeng6Ha_h6aeBee2ciamae8diev5nooshu',
+      expiresIn: '3600s'
     }
   },
 }

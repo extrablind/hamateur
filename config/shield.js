@@ -135,8 +135,8 @@ module.exports = {
       enable: false,
       methods: ['POST', 'PUT', 'DELETE'],
       filterUris: [
-          '/api/v1/login',
-          '/api/v1/register'
+          // '/api/v1/login',
+          // '/api/v1/register'
       ],
       compareHostAndOrigin: true
   }
