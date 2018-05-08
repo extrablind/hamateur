@@ -1,11 +1,10 @@
-import { Injectable, AfterViewInit } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, Subscription, BehaviorSubject, Subject } from 'rxjs/Rx';
-import * as moment from 'moment';
+import { Injectable, AfterViewInit } from "@angular/core";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { Observable, Subscription, BehaviorSubject, Subject } from "rxjs/Rx";
+import * as moment from "moment";
 
 @Injectable()
 export class TimerService {
-
   private future;
   private diff: number;
   private subscription: Subscription;
@@ -15,19 +14,26 @@ export class TimerService {
 
   intervalId = 0;
   DEFAULT: string = "--:--";
-  restartClickStream
+  restartClickStream;
   countdownStream;
-
+  total;
   public timer$: any; //this.timer.asObservable()
   private restartSub = new Subject<any>();
   private timeOutSub = new Subject<any>();
 
   constructor() {
     let now = moment();
-    this.future = now.add(20, 'minutes').toDate();
-    this.timer$ = Observable.interval(300).map((x) => {
+    this.future = now.add(20, "minutes").toDate();
+
+    let total = Math.floor(
+      (this.future.getTime() - new Date().getTime()) / 1000
+    );
+
+    this.timer$ = Observable.interval(300).map(x => {
       if (this.started && this.future) {
-        this.diff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
+        this.diff = Math.floor(
+          (this.future.getTime() - new Date().getTime()) / 1000
+        );
         // Timeout
         if (this.diff <= 0) {
           this.timeOutSub.next({
@@ -36,9 +42,14 @@ export class TimerService {
           });
           return;
         }
-        return this.dhms(this.diff);
+        let percent = Math.floor(100 * this.diff / total);
+        return {
+          message: this.dhms(this.diff),
+          percent: percent,
+          seconds: this.diff
+        };
       }
-      return this.DEFAULT
+      return this.DEFAULT;
     });
   }
   getTimeOutEvent(): Observable<any> {
@@ -60,7 +71,7 @@ export class TimerService {
     var hours = Math.floor(t / 3600) % 24;
     var minutes = Math.floor(t / 60) % 60;
     var seconds = t % 60;
-    var string = ""
+    var string = "";
     t -= days * 86400;
     t -= hours * 3600;
     t -= minutes * 60;
@@ -69,23 +80,23 @@ export class TimerService {
       this.noMoreTime = true;
     }
     if (minutes <= 9) {
-      string += "0"
+      string += "0";
     }
-    string += minutes + ':'
+    string += minutes + ":";
     if (seconds <= 9) {
-      string += "0"
+      string += "0";
     }
-    string += seconds
+    string += seconds;
 
     return string;
   }
 
   restart(minutes) {
     this.restartSub.next({ text: minutes });
-    this.kill()
+    this.kill();
     let now = moment();
-    this.future = now.add(minutes, 'minutes').toDate();
-    this.start()
+    this.future = now.add(minutes, "minutes").toDate();
+    this.start();
   }
 
   kill() {
@@ -93,7 +104,7 @@ export class TimerService {
       this.subscription.unsubscribe();
     }
     this.stop();
-    this.message = '--:--'
+    this.message = "--:--";
   }
 
   ngOnDestroy(): void {

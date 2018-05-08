@@ -1,32 +1,35 @@
+<div *ngIf="timer" class="timerProgress" [ngStyle]="{'width.%':timer.percent}"></div>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top ">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01"
+    aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
     <a class="navbar-brand" href="/">Hamateur</a>
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-      <li class="nav-item active">
-        <a routerLink="/candidate" class="nav-link" href="#">Candidate</a>
+      <li class="nav-item" *ngIf="!candidate">
+        <a routerLink="/login" class="nav-link" href="#">Connexion</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="!candidate">
+        <a routerLink="/register" class="nav-link" href="#">Nouveau comptre</a>
+      </li>
+      <li class="nav-item" *ngIf="candidate">
         <a routerLink="/exam" class="nav-link" href="#">Examen</a>
       </li>
-      <li class="nav-item">
-        <button class="disabled btn btn-success btn-lg">{{timer}}</button>
-      </li>
     </ul>
-    <app-registered (onCandidateLogout)=" logout($event) " [candidate]="candidate "></app-registered>
+    <div class="my-2 my-lg-0" *ngIf="candidate">
+      <button class="disabled btn btn-success">{{timer.message}}</button>
+      <app-registered (onCandidateLogout)=" logout($event) " [candidate]="candidate "></app-registered>
+    </div>
   </div>
 </nav>
+
 <br/>
 <br/>
 <br/>
 <br/>
+
 <div class="container-fluid ">
-  <div *ngIf="!candidate">
-    <app-candidate (onCandidateChange)="refreshCandidate($event) " [candidate]="candidate "></app-candidate>
-  </div>
-  <div *ngIf="candidate ">
-    <app-exam [candidate]="candidate"></app-exam>
-  </div>
+  <router-outlet></router-outlet>
 </div>

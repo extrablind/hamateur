@@ -1,14 +1,15 @@
-<div *ngIf="!questions" class="row">
-  <button type="button" id="questionLoader" class="btn btn-primary disabled "> <i class="fa fa-spinner fa-3x fa-spin "></i></button>
+<div *ngIf="!questions[selected]" class="row">
+  <button type="button" id="questionLoader" class="btn btn-primary disabled ">
+    <i class="fa fa-spinner fa-3x fa-spin "></i>
+  </button>
 </div>
 
-<div *ngIf="questions" class="row">
+<div *ngIf="questions[selected]" class="row">
   <div class="col-lg-7">
     <div class="card">
       <div class="card-header">
         Question {{selected +1 }} -
-        <small>Répondu à {{countAnsweredQuestions[this.step] }} / {{questions.length}} questions
-          -
+        <small>Répondu à {{countAnsweredQuestions[this.step] }} / {{questions.length}} questions -
           <span *ngIf="step==='legal' ">Partie légale</span>
           <span *ngIf="step==='technical' ">Partie technique</span>
           {{timer}}
@@ -16,23 +17,38 @@
 
         <div class="float-right float-sm-right">
           <div class="btn-group  btn-group-sm text-right" role="group" aria-label="Basic example">
-            <button type="button " (click)="previousQuestion($event) " [ngClass]="{ 'disabled':!previous } " class="btn  btn-primary "><i class="fa fa-arrow-left "></i> Précédent</button>
-            <button type="button " (click)="nextQuestion($event) " [ngClass]="{ 'disabled':!next } " class="btn  btn-primary  ">Suivant <i class="fa fa-arrow-right "></i></button>
+            <button type="button " (click)="previousQuestion($event) " [ngClass]="{ 'disabled':!previous } " class="btn  btn-primary ">
+              <i class="fa fa-arrow-left "></i> Précédente</button>
+            <button type="button " (click)="nextQuestion($event) " [ngClass]="{ 'disabled':!next } " class="btn  btn-primary  ">Suivante
+              <i class="fa fa-arrow-right "></i>
+            </button>
           </div>
-
         </div>
       </div>
       <div class="card-body">
         <h4 class="card-text">{{questions[selected].content}}</h4>
         <section *ngIf="questions[selected].containSchema" class="questionSchema">
-          <img src="/public/assets/img-exam/{{questions[selected].image.toLowerCase()}}" alt="{{questions[selected].image.toLowerCase()}}" class="img-fluid " />
+          <img src="/public/assets/img-exam/{{questions[selected].image.toLowerCase()}}" alt="{{questions[selected].image.toLowerCase()}}"
+            class="img-fluid " />
         </section>
         <hr/>
-        <ul class="list-group" style="">
-          <li (click)="answer($event, i)" [ngClass]="{'active':questions[selected].choices[i].selected }" *ngFor="let choice of questions[selected].choices; let i = index" class="list-group-item">
+        <ul class="list-group">
+          <li (click)="answer($event, i)" [ngClass]="{'active':questions[selected].choices[i].selected }" *ngFor="let choice of questions[selected].choices; let i = index"
+            class="list-group-item answerChoice">
             {{choice.content}}
           </li>
         </ul>
+      </div>
+      <div class="card-header">
+        <div class="float-right float-sm-right">
+          <div class="btn-group  btn-group-sm text-right" role="group" aria-label="Basic example">
+            <button type="button " (click)="previousQuestion($event) " [ngClass]="{ 'disabled':!previous } " class="btn  btn-primary ">
+              <i class="fa fa-arrow-left "></i> Précédente</button>
+            <button type="button " (click)="nextQuestion($event) " [ngClass]="{ 'disabled':!next } " class="btn  btn-primary  ">Suivante
+              <i class="fa fa-arrow-right "></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <br/>
@@ -56,26 +72,30 @@
         <div class="row">
           <div class="col-lg-6">
             <ul class="list-group list-group-sm">
-              <li *ngFor="let question of questions | slice:0:10; let i=index " [ngClass]="{ 'active':selected == i } " (click)="changeQuestion($event,i) " class="list-group-item">
+              <li *ngFor="let question of questions | slice:0:10; let i=index " [ngClass]="{ 'active':selected == i } " (click)="changeQuestion($event,i) "
+                class="list-group-item">
                 <span>
-              <i class="fas fa-check-circle " *ngIf="questions[i].answered "></i>
-              <i class="far fa-circle " *ngIf="!questions[i].answered "></i> Question {{i +1}}
-            <span class="float-right float-sm-right">   <i class="fa fa-image " *ngIf="questions[i].containSchema " data-toggle="tooltip " data-placement="top " title="This question contain a schema ">
-              </i>
-            </span>
+                  <i class="fas fa-check-circle " *ngIf="questions[i].answered "></i>
+                  <i class="far fa-circle " *ngIf="!questions[i].answered "></i> Question {{i +1}}
+                  <span class="float-right float-sm-right">
+                    <i class="fa fa-image " *ngIf="questions[i].containSchema " data-toggle="tooltip " data-placement="top " title="This question contain a schema ">
+                    </i>
+                  </span>
                 </span>
               </li>
             </ul>
           </div>
           <div class="col-lg-6">
             <ul class="list-group list-group-sm">
-              <li *ngFor="let question of questions | slice:10; let i=index " [ngClass]="{ 'active':selected == i+10 } " (click)="changeQuestion($event,i+10) " class="list-group-item">
+              <li *ngFor="let question of questions | slice:10; let i=index " [ngClass]="{ 'active':selected == i+10 } " (click)="changeQuestion($event,i+10) "
+                class="list-group-item">
                 <span>
-              <i class="fas fa-check-circle " *ngIf="questions[i+10].answered "></i>
-              <i class="far fa-circle " *ngIf="!questions[i+10].answered "></i> Question {{i +11}}
-              <span class="float-right float-sm-right">  <i class="fa fa-image " *ngIf="questions[i+10].containSchema " data-toggle="tooltip " data-placement="top " title="Cette question contient un schéma">
-              </i>
-            </span>
+                  <i class="fas fa-check-circle " *ngIf="questions[i+10].answered "></i>
+                  <i class="far fa-circle " *ngIf="!questions[i+10].answered "></i> Question {{i +11}}
+                  <span class="float-right float-sm-right">
+                    <i class="fa fa-image " *ngIf="questions[i+10].containSchema " data-toggle="tooltip " data-placement="top " title="Cette question contient un schéma">
+                    </i>
+                  </span>
                 </span>
               </li>
             </ul>

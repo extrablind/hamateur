@@ -70,7 +70,7 @@ module.exports = {
     password: 'password',
     options: {
       secret: 'thi&4ohoo!ceet3lie3ohk$acaht1geeng6Ha_h6aeBee2ciamae8diev5nooshu',
-      expiresIn: '3600s'
+      expiresIn: '15m'
     }
   },
 }

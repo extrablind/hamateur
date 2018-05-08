@@ -1,44 +1,35 @@
-<div class="row" *ngIf="status === 'pending' || status === 'ended'">
+<div *ngIf="!candidate" class="row">
+    <button type="button" id="questionLoader" class="btn btn-primary disabled "> <i class="fa fa-spinner fa-3x fa-spin "></i></button>
+  </div>
+
+<div class="row" *ngIf="candidate">
   <div class="col-lg-3">
     <div class=" card ">
       <div class="card-header">
         Menu
       </div>
       <div class="card-body ">
-        <button class="btn btn-primary btn-block" (click)="start('real')" type="button">Examen en conditions réelles</button>
-        <button class="btn btn-primary btn-block" (click)="start('simple')" type="button">Entrainement</button>
+        <a (click)="start('real')"  class="btn btn-primary btn-block" routerLink="/question" href="#">Examen en conditions réelles</a>
+        <a (click)="start('simple')" class="btn btn-primary btn-block" routerLink="/question-free"href="#">Entrainement</a>
       </div>
     </div>
   </div>
   <div class="col-lg-9">
     <div class="card">
       <div class="card-header">
-        <h3>Bienvenue</h3>
-        <small>
-        </small>
+        Bienvenue <i>{{candidate.username}}</i>
         <div class="float-right float-sm-right">
         </div>
       </div>
       <div class="card-body">
-        <h1 *ngIf="status === 'ended'">EXAM ENDED</h1>
-        <div *ngIf="!candidate.new" class="alert alert-warning alert-dismissible fade show" role="alert">
-          <strong>Bienvenue à toi, ami radio-amateur.</strong><br/> C'est ta première connexion ici, assure-toi de bien noter ton numéro unique quelque part, il servira pour te reconnecter plus tard !
-          <hr/>
-          <p>Quand tu seras prêts, tu pourras cliquer sur "Nouvel examen réel" pour commencer un examen en condition réel : 2 séries de 20 questions avec minuteur. Les autres modes sont en construction.</p>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <p>
-          Ton nom de candidat est <strong><i>{{candidate.name}}</i></strong><br/> Ton identifiant unique peut être copier/coller à partir du champs ci-dessous.<br/>
-          <input class="form-control" type="text" placeholder="Readonly input here…" value="{{candidate.uuid}}" readonly>
-        </p>
+        <p  class="alert" *ngIf="status === 'ended'">EXAM ENDED</p>
       </div>
     </div>
     <br/>
   </div>
 </div>
-<!-- TODO : Component Exam list for this candidate, here -->
+<!-- TODO : Component Exam list for this candidate, here 
 <app-question *ngIf="mode === 'real' && status === 'started'" (onChangeStep)="changeStep($event)" (onExamIsEnded)="save($event)">
 </app-question>
 <app-question-free *ngIf="mode === 'simple' && status === 'started'" (onExamIsEnded)="setStatus('ended')"></app-question-free>
+-->

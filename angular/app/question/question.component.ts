@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { TimerService } from '../services/timer.service';
 import { DataService } from '../services/data.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-question',
@@ -23,7 +24,6 @@ export default class QuestionComponent {
     'legal': 0,
     'technical': 0
   }
-
   public originalQuestionsData
   public datas
   public timer
@@ -33,50 +33,37 @@ export default class QuestionComponent {
   @Output() onExamIsStarted = new EventEmitter()
   @Output() onChangeStep = new EventEmitter()
 
-  constructor(datas: DataService, private timerSrv: TimerService) {
+  constructor(
+      datas: DataService, 
+      private timerSrv: TimerService,         
+      private router: Router  
+    ) {
     this.datas = datas
-    this.restartSub = this.timerSrv.getRestartEvent().subscribe(message => { console.log(message) });
+    this.restartSub = this.timerSrv.getRestartEvent().subscribe(minutes => {});
     this.timeoutSub = this.timerSrv.getTimeOutEvent().subscribe(date => {
-      console.log(date);
       if (this.step === 'legal') {
         this.restart(20);
         this.changeStep('technical', false);
         return;
       }
-      console.log("Timeout")
       this.end();
     });
 
-  }
-
-  ngOnDestroy() {
-    this.restartSub.unsubscribe();
-    this.timeoutSub.unsubscribe();
   }
 
   restart(minutes) {
     this.timerSrv.restart(minutes);
   }
 
-  public endExamEmitter() {
-    console.log("Exam is ended. Starting emitter ")
-  }
-
   async ngOnInit() {
-    this.isLoading = true
-      ;
-    //  if(typeof this.answered[this.step] !== 'undefined'){
-    // this.questions = this.answered[this.step];
-    //}else{
+    this.isLoading = true      ;
     var questions = await this.datas.getQuestions()
     this.questions = questions[this.step];
     this.originalQuestionsData = questions
-    //}
     this.refreshNavigationStatus()
     this.restart(20);
     this.onExamIsStarted.emit(this.step);
     this.isLoading = false;
-
   }
 
   reInitCurrentChoice() {
@@ -88,6 +75,7 @@ export default class QuestionComponent {
   end() {
     this.timerSrv.kill();
     this.onExamIsEnded.emit(this.answered);
+    this.router.navigate(['/exam']);
     localStorage.setItem('exam.status', 'ended');
   }
 
@@ -168,6 +156,11 @@ export default class QuestionComponent {
       this.selected = index;
     }
     this.refreshNavigationStatus()
+  }
+
+  ngOnDestroy() {
+    this.restartSub.unsubscribe();
+    this.timeoutSub.unsubscribe();
   }
 
 }

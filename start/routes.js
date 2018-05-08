@@ -24,13 +24,16 @@ Route.get('/', 'ExamController.home').as('home');
 
 // API Routes public
 Route.group('api-public', function() {
+  
   Route.post('/login', 'UserController.login')
   Route.post('/register', 'UserController.register')
-  //Route.get('/logout', 'UserController.logout')
+  Route.get('/refresh', 'UserController.refresh')
+
 }).prefix('/api/v1');
 
 // API Routes authenticated
 Route.group('api', function() {
+
     Route.get('/users/me', 'UserController.me')
 
     Route.post('/exam/correct', 'ExamController.correction')

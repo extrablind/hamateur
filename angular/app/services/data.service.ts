@@ -1,59 +1,42 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 // const _ = require('lodash');
 import * as _ from 'lodash'
+import { AuthenticationService } from '../_services/authentication.service';
 
 @Injectable()
 export class DataService {
+    private url: string = 'http://127.0.0.1:3333/api/v1';
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private authenticationService:AuthenticationService) {
       this.http = http;
     }
 
-    private url: string = 'http://127.0.0.1:3333/api/v1';
+  getHeaders(){
+      return {
+        'Authorization' : 'Bearer ' +  this.authenticationService.token 
+      }
+    }
 
-    correct(datas){
-      return this.http.post(this.url + "/exam/correct", datas)
+
+    // User
+    createUser(user){
+      return this.http.post(this.url + "/register", user)
                         .toPromise()
-                        .then(r => {return r });
-    }
+                        .then(token => {return token });
+     }
 
-    correctQuestion(question){
-      return this.http.post(this.url + "/question/correct", question)
-                        .toPromise()
-                        .then(r => {return r });
-    }
-
-    saveExam(datas){
-      return this.http.post(this.url + "/exam/save", datas)
-                        .toPromise()
-                        .then(exam => {return exam });
-    }
-
-    getExamScore(datas){
-      return this.http.post(this.url + "/exam/get-score", datas)
-                        .toPromise()
-                        .then(score => {return score });
-    }
-
-
-   createCandidate(name){
-     return this.http.post(this.url + "/candidate/create", {name:name})
-                       .toPromise()
-                       .then(candidate => {return candidate });
-    }
-
-    getCandidate(uuid){
-      let headers = new HttpHeaders();
-            let params = new HttpParams();
-            params = params.append('uuid',uuid);
-     return this.http.get(this.url + "/candidate/get", {headers, params})
-       .toPromise()
-       .then(result => { return result });
+    getUser(){
+      let headers = this.getHeaders();
+      return this.http.get(this.url + "/users/me", {headers: headers})
+        .map((response) => {
+          return response
+      });
     }
 
     getQuestion(){
-     return this.http.get(this.url + "/question/get")
+      let headers = this.getHeaders();
+     return this.http.get(this.url + "/question/get", {headers: headers})
        .toPromise()
        .then((question) => {
          question['answered'] = false;
@@ -65,9 +48,8 @@ export class DataService {
     }
 
     getQuestions(){
-      let headers = new HttpHeaders();
-            let params = new HttpParams();
-     return this.http.get(this.url + "/questions/get", {headers, params})
+      let headers = this.getHeaders();
+     return this.http.get(this.url + "/questions/get", { headers: headers})
        .toPromise()
        .then(parts => {
          // Add some angular technical fields here
@@ -80,6 +62,36 @@ export class DataService {
            });
          });
          return parts });
+    }
+
+    correct(datas){
+      let headers = this.getHeaders();
+
+      return this.http.post(this.url + "/exam/correct", datas,  {headers: headers})
+                        .toPromise()
+                        .then(r => {return r });
+    }
+
+    correctQuestion(question){
+      let headers = this.getHeaders();
+
+      return this.http.post(this.url + "/question/correct", question, {headers: headers})
+                        .toPromise()
+                        .then(r => {return r });
+    }
+
+    saveExam(datas){
+      let headers = this.getHeaders();
+      return this.http.post(this.url + "/exam/save", datas, {headers: headers})
+                        .toPromise()
+                        .then(exam => {return exam });
+    }
+
+    getExamScore(datas){
+      let headers = this.getHeaders();
+      return this.http.post(this.url + "/exam/get-score", datas, {headers: headers})
+                        .toPromise()
+                        .then(score => {return score });
     }
 
 }

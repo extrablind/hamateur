@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { TimerService } from '../services/timer.service';
 import { DataService } from '../services/data.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-question-free',
@@ -35,7 +36,7 @@ export default class QuestionFreeComponent {
     @Output() onExamIsEnded     = new EventEmitter()
     @Output() onExamIsStarted   = new EventEmitter()
 
-    constructor(datas:DataService , private timerSrv:TimerService) {
+    constructor(datas:DataService , private timerSrv:TimerService, private router: Router) {
       this.datas = datas
     }
     async ngOnInit(){
@@ -43,7 +44,8 @@ export default class QuestionFreeComponent {
     }
 
     end(){
-      this.onExamIsEnded.emit(this.stats);
+      //this.onExamIsEnded.emit(this.stats);
+      this.router.navigate(['/exam']);
     }
 
   async nextQuestion(event) {

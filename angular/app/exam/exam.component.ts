@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
-import Candidate from '../candidate/candidate.component';
 import { DataService } from '../services/data.service';
 import { TimerService } from '../services/timer.service';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs/Rx';
@@ -12,21 +11,32 @@ import { Observable, Subscription, BehaviorSubject } from 'rxjs/Rx';
 
 export default class ExamComponent {
   public status: string = "pending";
-  private timer
-  private restarted
-  public restartSub
   public countdownSub
   public mode
+  public candidate
+  // 
+  private timer
+  private restarted
+  // 
+  public apiGetUserSub
+  public restartSub
 
-  @Input() candidate: Candidate;
   @Output() onExamIsStarted = new EventEmitter();
   @Output() onExamIsEnded = new EventEmitter();
   @Output() onChangeStep = new EventEmitter();
   @Output() onExamStatusChanged = new EventEmitter();
-
+  
   constructor(private api: DataService, private timerSrv: TimerService) {
+    // Subscribers
     this.restartSub = this.timerSrv.getRestartEvent().subscribe(message => { console.log(message) });
-    this.countdownSub = this.timerSrv.timer$.subscribe(timer => { this.timer = timer });
+    //this.countdownSub = this.timerSrv.timer$.subscribe(timer => { this.timer = timer });
+    this.apiGetUserSub = this.api.getUser().subscribe(result => {
+      this.candidate = result;
+  });
+  }
+
+  ngOnInit(){
+   
   }
 
   restart(minutes) {
@@ -34,7 +44,7 @@ export default class ExamComponent {
   }
   ngOnDestroy() {
     this.restartSub.unsubscribe();
-    this.countdownSub.unsubscribe()
+    this.apiGetUserSub.unsubscribe()
   }
 
   changeStep(step) {

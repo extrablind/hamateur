@@ -1,0 +1,7 @@
+.timerProgress {
+  height: 4px;
+  background-color: #375a7f;
+  position: fixed;
+  z-index: 100000;
+  top: 0;
+}
